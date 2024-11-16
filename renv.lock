@@ -565,18 +565,18 @@
     },
     "geog712package": {
       "Package": "geog712package",
-      "Version": "0.1.0",
+      "Version": "0.1.1",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "geog712package",
       "RemoteUsername": "zehuiyin",
-      "RemoteSha": "6322680e7bfdda552d02db6ff735f96c9e97e701",
+      "RemoteSha": "407c2ab9cfdd9334aaf203964b5a580a17aff1f1",
       "Requirements": [
         "R",
         "sf"
       ],
-      "Hash": "f298e65f0087c2e49d4e6c9cdca83b66"
+      "Hash": "ff625e647cc347e44d062505f59301fa"
     },
     "ggplot2": {
       "Package": "ggplot2",
@@ -1058,6 +1058,21 @@
       ],
       "Hash": "b4404b1de13758dea1c0484ad0d48563"
     },
+    "pscl": {
+      "Package": "pscl",
+      "Version": "1.5.9",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "MASS",
+        "datasets",
+        "grDevices",
+        "graphics",
+        "stats",
+        "utils"
+      ],
+      "Hash": "23c877cb455d19c0e771df8b4831edbd"
+    },
     "purrr": {
       "Package": "purrr",
       "Version": "1.0.2",
@@ -1401,6 +1416,19 @@
         "lifecycle"
       ],
       "Hash": "213b6b8ed5afbf934843e6c3b090d418"
+    },
+    "texreg": {
+      "Package": "texreg",
+      "Version": "1.39.4",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "httr",
+        "methods",
+        "stats"
+      ],
+      "Hash": "13296e30f1768e684f39d331454d2309"
     },
     "textshaping": {
       "Package": "textshaping",
