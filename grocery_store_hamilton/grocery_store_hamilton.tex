@@ -147,6 +147,66 @@ West},city={Hamilton},postcode={L8S
   
  \end{frontmatter}
 
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# no code chunk echo}
+\NormalTok{knitr}\SpecialCharTok{::}\NormalTok{opts\_chunk}\SpecialCharTok{$}\FunctionTok{set}\NormalTok{(}
+  \AttributeTok{echo =}\NormalTok{ F}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Linking to GEOS 3.12.1, GDAL 3.8.4, PROJ 9.3.1; sf_use_s2() is TRUE
+\end{verbatim}
+
+\begin{verbatim}
+## -- Attaching core tidyverse packages ------------------------ tidyverse 2.0.0 --
+## v dplyr     1.1.4     v readr     2.1.5
+## v forcats   1.0.0     v stringr   1.5.1
+## v ggplot2   3.5.1     v tibble    3.2.1
+## v lubridate 1.9.3     v tidyr     1.3.1
+## v purrr     1.0.2     
+## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()
+## i Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+## Classes and Methods for R originally developed in the
+## Political Science Computational Laboratory
+## Department of Political Science
+## Stanford University (2002-2015),
+## by and under the direction of Simon Jackman.
+## hurdle and zeroinfl functions by Achim Zeileis.
+## 
+## udunits database from C:/Users/zehui/AppData/Local/R/cache/R/renv/cache/v5/windows/R-4.4/x86_64-w64-mingw32/units/0.8-5/119d19da480e873f72241ff6962ffd83/units/share/udunits/udunits2.xml
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Call:
+## zeroinfl(formula = Freq ~ Freq_count_lag_per | Freq_count_lag_per, data = grocery_CT, 
+##     dist = "negbin")
+## 
+## Pearson residuals:
+##     Min      1Q  Median      3Q     Max 
+## -0.7228 -0.6386 -0.5971  0.4651  3.3975 
+## 
+## Count model coefficients (negbin with log link):
+##                    Estimate Std. Error z value Pr(>|z|)
+## (Intercept)         -0.7049     0.7423  -0.950    0.342
+## Freq_count_lag_per   0.6980     0.6744   1.035    0.301
+## Log(theta)           0.5717     1.7306   0.330    0.741
+## 
+## Zero-inflation model coefficients (binomial with logit link):
+##                    Estimate Std. Error z value Pr(>|z|)
+## (Intercept)         -1.8345     5.3191  -0.345    0.730
+## Freq_count_lag_per  -0.8158     2.6442  -0.309    0.758
+## 
+## Theta = 1.7713 
+## Number of iterations in BFGS optimization: 29 
+## Log-likelihood: -155.7 on 5 Df
+\end{verbatim}
+
 Please make sure that your manuscript follows the guidelines in the
 Guide for Authors of the relevant journal. It is not necessary to
 typeset your manuscript in exactly the same way as an article, unless
