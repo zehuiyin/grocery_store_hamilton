@@ -1,55 +1,58 @@
-% Repository:  https://github.com/chiehrosswang/TRB_LaTeX_tex
-%
-% Transportation Research Board conference paper template
-% version 4.0 Lite (updates made to be compatible in Overleaf and ShareLaTeX)
-%
-%
-% When numbered option is activated, lines are numbered.
-\documentclass[numbered]{trbunofficial}
+\documentclass[preprint, 3p,
+authoryear]{elsarticle} %review=doublespace preprint=single 5p=2 column
+%%% Begin My package additions %%%%%%%%%%%%%%%%%%%
+
+\usepackage[hyphens]{url}
+
+  \journal{GEOG 712 Reproducible Research Workflow with GitHub and
+R} % Sets Journal name
+
 \usepackage{graphicx}
-\usepackage{booktabs}
+%%%%%%%%%%%%%%%% end my additions to header
 
-\newread\somefile
-\usepackage{xparse}
-\usepackage{natbib}
-\bibliographystyle{unsrtnat}
-\setcitestyle{round}
-% \usepackage[colorlinks=true,linkcolor=blue,citecolor=blue]{hyperref}
-% For TRB version hide links
-\usepackage[hidelinks]{hyperref}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+% TODO: Currently lineno needs to be loaded after amsmath because of conflict
+% https://github.com/latex-lineno/lineno/issues/5
+\usepackage{lineno} % add
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \usepackage{fontspec}
+  \ifxetex
+    \usepackage{xltxtra,xunicode}
+  \fi
+  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
+  \newcommand{\euro}{€}
+\fi
+% use microtype if available
+\IfFileExists{microtype.sty}{\usepackage{microtype}}{}
+\usepackage[]{natbib}
+\bibliographystyle{elsarticle-harv}
 
-% Put here what will go to headers as author
-\AuthorHeaders{Anonymous, Security, and Zoolander}
-\title{An Rticles Template for the Transport Research Board Annual
-Meeting}
+\ifxetex
+  \usepackage[setpagesize=false, % page size defined by xetex
+              unicode=false, % unicode breaks when used with xetex
+              xetex]{hyperref}
+\else
+  \usepackage[unicode=true]{hyperref}
+\fi
+\hypersetup{breaklinks=true,
+            bookmarks=true,
+            pdfauthor={},
+            pdftitle={Food Deserts or Food Oases? Predicting Grocery Store Locations in Hamilton, Ontario},
+            colorlinks=false,
+            urlcolor=blue,
+            linkcolor=magenta,
+            pdfborder={0 0 0}}
 
-% TODO: add macros for easier formatting of \author.
-\author{%
-    \textbf{Alice Anonymous}\\\textit{Corresponding Author}\\
-  Graduate Student\\
-  Some Institute of Technology\\
-  \href{mailto:alice@example.com}{\nolinkurl{alice@example.com}}\\
-  \hfill\break
-    \textbf{Bob Security}\\
-  Assistant Professor\\
-  State University\\
-  \href{mailto:bob@example.com}{\nolinkurl{bob@example.com}}\\
-  \hfill\break
-    \textbf{Derek Zoolander}\\
-  Professor\\
-  Some Institute of Technology\\
-  \href{mailto:derek@example.com}{\nolinkurl{derek@example.com}}\\
-  \hfill\break
-  }
-
-% If necessary modify the number of words per table or figure default is set to
-% 250 words per table (default defined in cls)
-
-
-% If words are counted manually, put that number here. This does not include
-% figures and tables. This can also be used to avoid problems with texcount
-% program i.e. if one does not have it installed.
-\TotalWords{684}
+\setcounter{secnumdepth}{5}
+% Pandoc toggle for numbering sections (defaults to be off)
 
 % Pandoc syntax highlighting
 \usepackage{color}
@@ -97,168 +100,158 @@ Meeting}
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 
+% From pandoc table feature
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+
+
+
 
 
 
 \begin{document}
-\maketitle
 
 
-\section{Abstract}
-The Transportation Research Board (TRB) has unique and seemingly
-arbitrary requirements for manuscripts submitted for review. These
-requirements make it difficult to write the manuscripts quickly, and no
-existing \LaTeX~style comes close to fooling the guidelines. This
-represents an initial effort at creating a template to meet the
-requirements of TRB authors using \LaTeX, R, Sweave, and/or other
-literate programming software.
-\hfill\break%
-\hfill\break%
-\noindent\textit{Keywords}:  Transportation, Travel Behavior,  
-\newpage
+\begin{frontmatter}
 
-\section{Transportation Research Board Annual
-Meetings}\label{transportation-research-board-annual-meetings}
+  \title{Food Deserts or Food Oases? Predicting Grocery Store Locations
+in Hamilton, Ontario}
+    \author[sees]{Zehui Yin%
+  \corref{cor1}%
+  }
+   \ead{yinz39@mcmaster.ca} 
+      \affiliation[sees]{
+    organization={School of Earth, Environment \& Society, McMaster
+University},addressline={1280 Main Street
+West},city={Hamilton},postcode={L8S
+4K1},state={Ontario},country={Canada},}
+    \cortext[cor1]{Corresponding author}
+  
+  \begin{abstract}
+  This is the abstract.
 
-TRB has greatly simplified the submissions to its system, meaning that
-this template is no longer strictly required. However, there is a
-typical format that most people still use by default, and this template
-implements that change.
+  It consists of two paragraphs.
+  \end{abstract}
+    \begin{keyword}
+    Grocery Store \sep 
+    Hamilton
+  \end{keyword}
+  
+ \end{frontmatter}
 
-\section{Features}\label{features}
+Please make sure that your manuscript follows the guidelines in the
+Guide for Authors of the relevant journal. It is not necessary to
+typeset your manuscript in exactly the same way as an article, unless
+you are submitting to a camera-ready copy (CRC) journal.
 
-The template has a number of features that enable quick and painless
-manuscript authoring.
+For detailed instructions regarding the elsevier article class, see
+\url{https://www.elsevier.com/authors/policies-and-guidelines/latex-instructions}
 
-\subsection{Mathematics}\label{mathematics}
+\section{Bibliography styles}\label{bibliography-styles}
 
-Standard pandoc / \LaTeX math environments are available. For example,
-the probability of an individual choosing alternative \(i\) in a
-multinomial logit model is \begin{equation}
-  P_i = \frac{exp(V_i)}{\sum_{i, j \in J}exp(V_j)} \label{eq:mnl}
-\end{equation} Equations with a
-\texttt{\textbackslash{}label\{eq:label\}} can be referred to later in
-the text with \texttt{\textbackslash{}ref\{eq:label\}}, such as Equation
-\ref{eq:mnl}.
+Here are two sample references: \citeauthor{Feynman1963118}
+\citetext{\citeyear{Feynman1963118}; \citealp{Dirac1953888}}.
 
-\subsection{Title Page}\label{title-page}
+By default, natbib will be used with the \texttt{authoryear} style, set
+in \texttt{classoption} variable in YAML and with
+\texttt{elsearticle-harv.bst} which is among provided style by
+\texttt{elsarticle} documentclass. Other available style are
+\texttt{elsarticle-num.bst} and \texttt{elsarticle-num-names.bst} ---
+the first one can be used for the numbered scheme, second one for
+numbered with new options of natbib.sty.
 
-The template will automatically create a title page with the authors in
-the listed order. Near the bottom of the title page, TRB requires a
-count of the manuscript's words and tables. The YAML header information
-contains a \texttt{wordcount} key where this can be encoded. The number
-of tables is counted automatically on build; a default 250 words per
-table can be overriden with the \texttt{wordspertable} YAML key.
-
-The LaTeX template available from
-\url{https://github.com/chiehrosswang/TRB_LaTeX_tex} contain automatic
-word counters that have not been implemented in this \texttt{rticles}
-template. Authors can use the R Studio word count add-in available from
-\url{https://github.com/benmarwick/wordcountaddin}.
-
-\subsection{Page Layout}\label{page-layout}
-
-The document has 1 inch margins as required, with the author's names in
-the left heading and the page number in the right. The running header
-information is set with the \texttt{runningheader} YAML key. Paragraphs
-leading sections and subsections are not indented, while all subsequent
-paragraphs in that section are. Section heading types are defined as
-outlined by the old TRB Author's Guide.
-
-The document is single-spaced in 12 point Times font. Times New Roman is
-a proprietary font and is therefore not available by installation in
-open-source software. While the differences between Times variants are
-negligible, Times New Roman itself can be used in Mac OSX by compiling
-under \texttt{xelatex}.
-
-\subsection{Figure and Table
-references}\label{figure-and-table-references}
-
-The document can use standard pandoc referencing tools for in-text
-citations to figures and tables. If an R code chunk outputs a figure,
-the figure number can be referred to with
-\texttt{\textbackslash{}@ref(fig:chunkname)} where \texttt{chunkname} is
-the name of the chunk that prints the figure. For example, Figure
-@ref(fig:figure-example) shows a default figure made by the R chunk
-below.
+You can sets extra options with \texttt{natbiboptions} variable in YAML
+header. Example
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Generate some sample data, then compute mean and standard deviation}
-\CommentTok{\# in each group}
-\NormalTok{Speed }\OtherTok{\textless{}{-}}\NormalTok{ cars}\SpecialCharTok{$}\NormalTok{speed}
-\NormalTok{Distance }\OtherTok{\textless{}{-}}\NormalTok{ cars}\SpecialCharTok{$}\NormalTok{dist}
-\FunctionTok{plot}\NormalTok{(Speed, Distance,}
-     \AttributeTok{panel.first =} \FunctionTok{lines}\NormalTok{(stats}\SpecialCharTok{::}\FunctionTok{lowess}\NormalTok{(Speed, Distance), }\AttributeTok{lty =} \StringTok{"dashed"}\NormalTok{),}
-     \AttributeTok{pch =} \DecValTok{0}\NormalTok{, }\AttributeTok{cex =} \FloatTok{1.2}\NormalTok{, }\AttributeTok{col =} \StringTok{"blue"}\NormalTok{)}
+\FunctionTok{natbiboptions}\KeywordTok{:}\AttributeTok{ longnamesfirst,angle,semicolon}
 \end{Highlighting}
 \end{Shaded}
 
+There are various more specific bibliography styles available at
+\url{https://support.stmdocs.in/wiki/index.php?title=Model-wise_bibliographic_style_files}.
+To use one of these, add it in the header using, for example,
+\texttt{biblio-style:\ model1-num-names}.
+
+\subsection{Using CSL}\label{using-csl}
+
+If \texttt{citation\_package} is set to \texttt{default} in
+\texttt{elsevier\_article()}, then pandoc is used for citations instead
+of \texttt{natbib}. In this case, the \texttt{csl} option is used to
+format the references. Alternative \texttt{csl} files are available from
+\url{https://www.zotero.org/styles?q=elsevier}. These can be downloaded
+and stored locally, or the url can be used as in the example header.
+
+\section{Equations}\label{equations}
+
+Here is an equation: \[ 
+  f_{X}(x) = \left(\frac{\alpha}{\beta}\right)
+  \left(\frac{x}{\beta}\right)^{\alpha-1}
+  e^{-\left(\frac{x}{\beta}\right)^{\alpha}}; 
+  \alpha,\beta,x > 0 .
+\]
+
+Here is another: \begin{align}
+  a^2+b^2=c^2.
+\end{align}
+
+Inline equations: \(\sum_{i = 2}^\infty\{\alpha_i^\beta\}\)
+
+\section{Figures and tables}\label{figures-and-tables}
+
+Figure \ref{fig2} is generated using an R chunk.
+
 \begin{figure}
-\centering
-\includegraphics{grocery_store_hamilton_files/figure-latex/figure-example-1.pdf}
-\caption{Generic plot.}
+
+{\centering \includegraphics[width=0.5\linewidth]{grocery_store_hamilton_files/figure-latex/fig2-1} 
+
+}
+
+\caption{\label{fig2}A meaningless scatterplot.}\label{fig:fig2}
 \end{figure}
 
-The template setup chunk sets \texttt{echo\ =\ FALSE} for the entire
-document, as printing code listings would not usually be appropriate or
-needed for a TRB article. But the option is there!
+\section{Tables coming from R}\label{tables-coming-from-r}
 
-The same referencing logic works for tables, with the \texttt{tab:}
-prefix on the chunk name instead of \texttt{fig:} used for figures.
-Table @ref(tab:table-example) has a basic table. We recommend the
-\texttt{kableExtra} package for formatting publication-ready tables with
-greater control than the default \texttt{knitr::kable()} function.
+Tables can also be generated using R chunks, as shown in Table
+\ref{tab1} for example.
 
-\begin{table}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{knitr}\SpecialCharTok{::}\FunctionTok{kable}\NormalTok{(}\FunctionTok{head}\NormalTok{(mtcars)[,}\DecValTok{1}\SpecialCharTok{:}\DecValTok{4}\NormalTok{], }
+    \AttributeTok{caption =} \StringTok{"}\SpecialCharTok{\textbackslash{}\textbackslash{}}\StringTok{label\{tab1\}Caption centered above table"}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
 
-\caption{\label{tab:table-example}Example Table}
-\centering
-\begin{tabular}[t]{lrrrrrr}
-\toprule
-  & mpg & cyl & disp & hp & drat & wt\\
-\midrule
-Mazda RX4 & 21.0 & 6 & 160 & 110 & 3.90 & 2.620\\
-Mazda RX4 Wag & 21.0 & 6 & 160 & 110 & 3.90 & 2.875\\
-Datsun 710 & 22.8 & 4 & 108 & 93 & 3.85 & 2.320\\
-Hornet 4 Drive & 21.4 & 6 & 258 & 110 & 3.08 & 3.215\\
-Hornet Sportabout & 18.7 & 8 & 360 & 175 & 3.15 & 3.440\\
-\bottomrule
-\end{tabular}
-\end{table}
+\begin{longtable}[]{@{}lrrrr@{}}
+\caption{\label{tab1}Caption centered above table}\tabularnewline
+\toprule\noalign{}
+& mpg & cyl & disp & hp \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+& mpg & cyl & disp & hp \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Mazda RX4 & 21.0 & 6 & 160 & 110 \\
+Mazda RX4 Wag & 21.0 & 6 & 160 & 110 \\
+Datsun 710 & 22.8 & 4 & 108 & 93 \\
+Hornet 4 Drive & 21.4 & 6 & 258 & 110 \\
+Hornet Sportabout & 18.7 & 8 & 360 & 175 \\
+Valiant & 18.1 & 6 & 225 & 105 \\
+\end{longtable}
 
-\subsection{Bibliography styles}\label{bibliography-styles}
-
-TRB still wants numbered, unsorted citations beginning on a new page.
-The template is configured to use \texttt{natbib} with the
-\texttt{unsrtnat} citation style, with some additional logic to use
-parentheses instead of brackets. The YAML key \texttt{biblio-style} will
-allow the authors to select a different citation format, but this is not
-recommended at the moment. Citations use the pandoc logic. Including the
-reference in brackets \texttt{{[}@reference{]}} will print only the
-numeric reference; e.g. \citep{Feynman1963118, Dirac1953888}. Including
-the reference without brackets \texttt{@reference} will print the
-authors and then the numeric reference; e.g. \citet{Feynman1963118}.
-
-\section{Author Contribution
-Statement}\label{author-contribution-statement}
-
-The authors confirm contribution to the paper as follows: study
-conception and design: A. Anonymous, D. Zoolander; data collection: B.
-Security; analysis and interpretation of results: A. Anonymous, B.
-Security; draft manuscript preparation: A. Anonymous. All authors
-reviewed the results and approved the final version of the manuscript.
-
-\section{Acknowledgements}\label{acknowledgements}
-
-David Pritchard posted the original versions of this template in 2009
-and updated it in 2011, soon after TRB began allowing PDF submissions.
-Gregory Macfarlane and Ross Wang made adjustments to the template, and
-Ross Wang now maintains the \LaTeX template at
-\url{https://github.com/chiehrosswang/TRB_LaTeX_tex}. Gregory Macfarlane
-created the \texttt{rticles} template in 2021.
-
-\newpage
 \renewcommand\refname{References}
 \bibliography{mybibfile.bib}
 

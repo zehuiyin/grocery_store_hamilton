@@ -3,3 +3,6 @@
 library(tidyverse)
 library(sf)
 library(rticles)
+library(remotes)
+# remotes::install_github("zehuiyin/geog712package")
+library(geog712package)

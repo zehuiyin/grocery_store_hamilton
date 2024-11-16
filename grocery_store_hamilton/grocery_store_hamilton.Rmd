@@ -1,147 +1,134 @@
 ---
-title: An Rticles Template for the Transport Research Board Annual Meeting
-runningheader: "Anonymous, Security, and Zoolander"
+title: Food Deserts or Food Oases? Predicting Grocery Store Locations in Hamilton, Ontario
 author:
-  - name: Alice Anonymous
-    note: Corresponding Author
-    position: Graduate Student
-    email: alice@example.com
-    affiliation: Some Institute of Technology
-  - name: Bob Security
-    position: Assistant Professor
-    email: bob@example.com
-    affiliation: State University
-  - name: Derek Zoolander
-    position: Professor
-    email: derek@example.com
-    affiliation: Some Institute of Technology
+  - name: Zehui Yin
+    email: yinz39@mcmaster.ca
+    affiliation: sees
+    correspondingauthor: true
+address:
+  - code: sees
+    organization: School of Earth, Environment & Society, McMaster University
+    addressline: 1280 Main Street West
+    city: Hamilton
+    state: Ontario
+    postcode: L8S 4K1
+    country: Canada
 abstract: |
-  The Transportation Research Board (TRB) has unique and seemingly arbitrary requirements for manuscripts submitted for review. These requirements make it difficult to write the manuscripts quickly, and no existing \LaTeX\ style comes close to fooling the guidelines. This represents an initial effort at creating a template to meet the requirements of TRB authors using \LaTeX, R, Sweave, and/or other literate programming software.
-  
-keywords: ["Transportation", "Travel Behavior"]
+  This is the abstract.
+
+  It consists of two paragraphs.
+keywords: 
+  - Grocery Store
+  - Hamilton
+journal: "GEOG 712 Reproducible Research Workflow with GitHub and R"
+date: "`r Sys.Date()`"
+linenumbers: false
+numbersections: true
 bibliography: mybibfile.bib
-biblio-style: unsrtnat
-classoption:
-  - numbered #  When numbered option is activated, lines are numbered.
-output: rticles::trb_article
-wordcount: 684
+biblio-style: elsarticle-harv # author year style for natbib - use 'elsarticle-num' or 'elsarticle-num-names' for numbered scheme
+classoption: preprint, 3p, authoryear # remove authoryear is not using `elsarticle-harv`
+# Use a CSL with `citation_package = "default"`
+# csl: https://www.zotero.org/styles/elsevier-harvard
+output: 
+  rticles::elsevier_article:
+    keep_tex: true
+    citation_package: natbib
 ---
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+```{r}
+knitr::opts_chunk$set(
+  output = F
+)
+```
+
+```{r}
+library(sf)
+library(geog712package)
 ```
 
 
-# Transportation Research Board Annual Meetings
-
-TRB has greatly simplified the submissions to its system, meaning that this
-template is no longer strictly required. However, there is a typical format
-that most people still use by default, and this template implements that change.
 
 
-# Features
 
-The template has a number of features that enable quick and painless manuscript authoring.
 
-## Mathematics
 
-Standard pandoc / \LaTeX math environments are available.  For example, the
-probability of an individual choosing alternative $i$ in a multinomial logit
-model is
-\begin{equation}
-  P_i = \frac{exp(V_i)}{\sum_{i, j \in J}exp(V_j)} \label{eq:mnl}
-\end{equation}
-Equations with a `\label{eq:label}` can be referred to later in the text with
-`\ref{eq:label}`, such as Equation \ref{eq:mnl}.
 
-## Title Page
 
-The template will automatically create a title page with the authors in the
-listed order.  Near the bottom of the title page, TRB requires a count of the manuscript's
-words and tables. The YAML header information contains a `wordcount` key where
-this can be encoded. The number of tables is counted automatically on build; 
-a default 250 words per table can be overriden with the `wordspertable` YAML
-key.
 
-The LaTeX template available from <https://github.com/chiehrosswang/TRB_LaTeX_tex>
-contain automatic word counters that have not been implemented in this `rticles`
-template. Authors can use the R Studio word count add-in available from
-<https://github.com/benmarwick/wordcountaddin>.
 
-## Page Layout
 
-The document has 1 inch margins as required, with the author's names in the left
-heading and the page number in the right. The running header information is set
-with the `runningheader` YAML key. Paragraphs leading sections and subsections
-are not indented, while all subsequent paragraphs in that section are. Section
-heading types are defined as outlined by the old TRB Author's Guide.
 
-The document is single-spaced in 12 point Times font. Times New Roman is a
-proprietary font and is therefore not available by installation in open-source
-software. While the differences between Times variants are negligible, Times New
-Roman itself can be used in Mac OSX by compiling under `xelatex`.
 
-## Figure and Table references
 
-The document can use standard pandoc referencing tools for in-text
-citations to figures and tables. If an R code chunk outputs a figure, the figure
-number can be referred to with `\@ref(fig:chunkname)` where `chunkname` is the
-name of the chunk that prints the figure.  For example, Figure \@ref(fig:figure-example)
-shows a default figure made by the R chunk below.
 
-```{r figure-example, fig.cap="Generic plot.", echo = TRUE}
-# Generate some sample data, then compute mean and standard deviation
-# in each group
-Speed <- cars$speed
-Distance <- cars$dist
-plot(Speed, Distance,
-     panel.first = lines(stats::lowess(Speed, Distance), lty = "dashed"),
-     pch = 0, cex = 1.2, col = "blue")
+
+
+
+
+
+
+
+Please make sure that your manuscript follows the guidelines in the 
+Guide for Authors of the relevant journal. It is not necessary to 
+typeset your manuscript in exactly the same way as an article, 
+unless you are submitting to a camera-ready copy (CRC) journal.
+
+For detailed instructions regarding the elsevier article class, see   <https://www.elsevier.com/authors/policies-and-guidelines/latex-instructions>
+
+# Bibliography styles
+
+Here are two sample references: @Feynman1963118 [@Dirac1953888].
+
+By default, natbib will be used with the `authoryear` style, set in `classoption` variable in YAML and with `elsearticle-harv.bst` which is among provided style by `elsarticle` documentclass. Other available style are `elsarticle-num.bst` and `elsarticle-num-names.bst` — the first one can be used for the numbered scheme, second one for numbered with new options of natbib.sty. 
+
+You can sets extra options with `natbiboptions` variable in YAML header. Example 
+```yaml
+natbiboptions: longnamesfirst,angle,semicolon
 ```
 
-The template setup chunk sets `echo = FALSE` for the entire document, as printing
-code listings would not usually be appropriate or needed for a TRB article. But
-the option is there!
+There are various more specific bibliography styles available at
+<https://support.stmdocs.in/wiki/index.php?title=Model-wise_bibliographic_style_files>. 
+To use one of these, add it in the header using, for example, `biblio-style: model1-num-names`.
 
-The same referencing logic works for tables, with the `tab:` prefix on the
-chunk name instead of `fig:` used for figures. Table \@ref(tab:table-example)
-has a basic table. We recommend the `kableExtra` package for formatting 
-publication-ready tables with greater control than the default `knitr::kable()`
-function.
+## Using CSL 
 
-```{r table-example}
-knitr::kable(mtcars[1:5, 1:6], format = "latex", table.envir = "table", 
-             booktabs = TRUE, caption = "Example Table") 
+If `citation_package` is set to `default` in `elsevier_article()`, then pandoc is used for citations instead of `natbib`. In this case, the `csl` option is used to format the references. Alternative `csl` files are available from <https://www.zotero.org/styles?q=elsevier>. These can be downloaded
+and stored locally, or the url can be used as in the example header.
+
+# Equations
+
+Here is an equation:
+$$ 
+  f_{X}(x) = \left(\frac{\alpha}{\beta}\right)
+  \left(\frac{x}{\beta}\right)^{\alpha-1}
+  e^{-\left(\frac{x}{\beta}\right)^{\alpha}}; 
+  \alpha,\beta,x > 0 .
+$$
+
+Here is another:
+\begin{align}
+  a^2+b^2=c^2.
+\end{align}
+
+Inline equations: $\sum_{i = 2}^\infty\{\alpha_i^\beta\}$
+
+# Figures and tables
+
+Figure \ref{fig2} is generated using an R chunk.
+
+```{r fig2, fig.width = 5, fig.height = 5, fig.align='center', out.width="50%", fig.cap = "\\label{fig2}A meaningless scatterplot.", echo = FALSE}
+plot(runif(25), runif(25))
 ```
 
+# Tables coming from R
 
-## Bibliography styles
+Tables can also be generated using R chunks, as shown in Table \ref{tab1} for example.
 
-TRB still wants numbered, unsorted citations beginning on a new page. The
-template is configured to use `natbib` with the `unsrtnat` citation style, with
-some additional logic to use parentheses instead of brackets. The YAML key
-`biblio-style` will allow the authors to select a different citation format, but
-this is not recommended at the moment. Citations use the pandoc logic. Including
-the reference in brackets `[@reference]` will print only the numeric reference;
-e.g. [@Feynman1963118; @Dirac1953888]. Including the reference without brackets
-`@reference` will print the authors and then the numeric reference; e.g.
-@Feynman1963118.
+```{r tab1, echo = TRUE}
+knitr::kable(head(mtcars)[,1:4], 
+    caption = "\\label{tab1}Caption centered above table"
+)
+```
 
-# Author Contribution Statement
+# References {-}
 
-The authors confirm contribution to the paper as follows: study conception and
-design: A. Anonymous, D. Zoolander; data collection: B. Security; analysis and
-interpretation of results: A. Anonymous, B. Security; draft manuscript
-preparation: A. Anonymous. All authors reviewed the results and approved
-the final version of the manuscript.
-
-# Acknowledgements
-
-David Pritchard posted the original versions of this template in 2009 and
-updated it in 2011, soon after TRB began allowing PDF submissions. Gregory
-Macfarlane and Ross Wang made adjustments to the template, and Ross Wang now
-maintains the \LaTeX template at
-<https://github.com/chiehrosswang/TRB_LaTeX_tex>. Gregory Macfarlane created the `rticles` template in 2021.
-
-
-# References {#references }
