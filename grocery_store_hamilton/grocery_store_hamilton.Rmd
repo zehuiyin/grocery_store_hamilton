@@ -51,6 +51,8 @@ library(geog712package)
 library(pscl)
 library(units)
 library(texreg)
+library(mapview)
+library(tidytransit)
 ```
 
 ```{r}
@@ -59,10 +61,52 @@ data("grocery_DA")
 
 # reproject the data
 grocery_DA <- st_transform(grocery_DA, crs = 26917)
+
+
+# create a point for hamilton downtown
+hamilton_downtown <- st_as_sf(data.frame(list("name"="hamilton downtown", 
+                                              "x"=43.258657062558896, 
+                                              "y"=-79.8707987387457)),
+                              crs = 4326, coords = c("y", "x"))
+hamilton_downtown <- st_transform(hamilton_downtown, crs = 26917)
+
+# read hsr GTFS
+hsr <- read_gtfs("https://github.com/zehuiyin/geog712package/raw/refs/heads/main/data-raw/fall2024_GTFS_static.zip")
+
+# convert to hsr stops
+hsr_stops <- st_as_sf(hsr$stops,
+                      coords = c("stop_lon", "stop_lat"),
+                      crs = 4326)
+hsr_stops <- st_transform(hsr_stops, crs = 26917)
 ```
 
-```{r}
-# calculate percentage values
+```{r, warning=FALSE}
+# compute the number of hsr stops in each DA
+stops_inter <- st_intersection(hsr_stops, grocery_DA)
+
+stop_count <- stops_inter |> st_drop_geometry() |> group_by(GeoUID) |> count()
+
+colnames(stop_count) <- c("GeoUID", "n_hsr_stops")
+
+grocery_DA <- merge(x = grocery_DA, 
+                    y = stop_count,
+                    by = "GeoUID",
+                    all.x = TRUE
+                    )
+
+grocery_DA[is.na(grocery_DA$n_hsr_stops),]$n_hsr_stops <- 0
+
+# convert it into a factor
+hsr_level <- cut(grocery_DA$n_hsr_stops,
+                 breaks = c(-1, quantile(grocery_DA$n_hsr_stops)[3:5]))
+
+levels(hsr_level) <- c("low" , "mid", "high")
+
+grocery_DA$hsr_level <- hsr_level
+```
+
+```{r, warning=FALSE}
+# construct some independent variables
 
 # population density
 grocery_DA$pop_density <- grocery_DA$v_CA21_1..Population..2021/grocery_DA$v_CA21_7..Land.area.in.square.kilometres
@@ -70,6 +114,11 @@ grocery_DA$log_pop_density <- log(grocery_DA$pop_density + 1)
 
 # log land area
 grocery_DA$log_area <- log(grocery_DA$v_CA21_7..Land.area.in.square.kilometres)
+
+# calculate distance to downtown
+grocery_DA$dist_to_downtown <- st_distance(st_centroid(grocery_DA), 
+                                           hamilton_downtown) |> drop_units()
+grocery_DA$log_dist_to_downtown <- log(grocery_DA$dist_to_downtown)
 
 # percentage of people age from 0 - 24
 grocery_DA$PCT_aged_under_24 <- (grocery_DA$v_CA21_11..0.to.14.years + 
@@ -141,11 +190,13 @@ m1 <- zeroinfl(Freq ~ Freq_lag +
                  PCT_single_detached +
                  PCT_income_less_40k +
                  PCT_income_greater_100k + 
-                 PCT_married_common_law +
+                 PCT_married_common_law + 
+                 log_dist_to_downtown +
                  log_pop_density |
                  log_pop_density +
                  PCT_not_speak_offcial_language_at_home + 
                  PCT_married_common_law +
+                 hsr_level +
                  log_area +
                  Freq_lag,
                data = grocery_DA, dist = "negbin")
@@ -171,7 +222,10 @@ texreg(m1,
          "Count model: PCT_income_less_40k" = "Count model: Percentage of population have annual total income less than 40K",
          "Count model: PCT_income_greater_100k" = "Count model: Percentage of population have annual total income more than 100K",
          "Count model: PCT_married_common_law" = "Count model: Percentage of population that are married or live in common-law",
-         "Count model: log_pop_density" = "Count model: Natural log of population density + 1",
+         "Count model: log_pop_density" = "Count model: Natural log of (population density + 1)",
+         "Count model: log_dist_to_downtown" = "Count model: Natural log of distance from DA centroid to Hamilton downtown",
+         "Count model: hsr_levelmid" = "Count model: Number of HSR bus stops (50-75 percentile)",
+         "Count model: hsr_levelhigh" = "Count model: Number of HSR bus stops (75-100 percentile)",
          "Count model: log_area" = "Count model: Natural log of area size in square kilometres",
          # Zero model
          "Zero model: Freq_lag" = "Zero model: Spatial lag of grocery store count",
@@ -183,7 +237,10 @@ texreg(m1,
          "Zero model: PCT_income_less_40k" = "Zero model: Percentage of population have annual total income less than 40K",
          "Zero model: PCT_income_greater_100k" = "Zero model: Percentage of population have annual total income more than 100K",
          "Zero model: PCT_married_common_law" = "Zero model: Percentage of population that are married or live in common-law",
-         "Zero model: log_pop_density" = "Zero model: Natural log of population density + 1",
+         "Zero model: log_pop_density" = "Zero model: Natural log of (population density + 1)",
+         "Zero model: log_dist_to_downtown" = "Zero model: Natural log of distance from DA centroid to Hamilton downtown",
+         "Zero model: hsr_levelmid" = "Zero model: Number of HSR bus stops (50-75 percentile)",
+         "Zero model: hsr_levelhigh" = "Zero model: Number of HSR bus stops (75-100 percentile)",
          "Zero model: log_area" = "Zero model: Natural log of area size in square kilometres"
         )
        )
