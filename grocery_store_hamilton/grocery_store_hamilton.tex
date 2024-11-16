@@ -149,54 +149,50 @@ West},city={Hamilton},postcode={L8S
 
 \begin{table}
 \begin{center}
+\begin{footnotesize}
 \begin{tabular}{l c}
 \hline
- & Model 1 \\
+ & Zero inflated negative binomial model \\
 \hline
-Count model: (Intercept)                                  & $5.43$        \\
-                                                          & $(3.08)$      \\
-Count model: Freq\_lag                                    & $-1.74^{*}$   \\
-                                                          & $(0.83)$      \\
-Count model: PCT\_aged\_under\_24                         & $0.01$        \\
-                                                          & $(0.03)$      \\
-Count model: PCT\_aged\_above\_65                         & $0.01$        \\
-                                                          & $(0.02)$      \\
-Count model: PCT\_dont\_know\_official\_language          & $0.00$        \\
-                                                          & $(0.10)$      \\
-Count model: PCT\_not\_speak\_offcial\_language\_at\_home & $0.17^{**}$   \\
-                                                          & $(0.05)$      \\
-Count model: PCT\_single\_detached                        & $-0.01^{*}$   \\
-                                                          & $(0.01)$      \\
-Count model: PCT\_income\_less\_40k                       & $-0.05$       \\
-                                                          & $(0.03)$      \\
-Count model: PCT\_income\_greater\_100k                   & $-0.02$       \\
-                                                          & $(0.04)$      \\
-Count model: PCT\_married\_common\_law                    & $-0.02$       \\
-                                                          & $(0.03)$      \\
-Count model: log\_pop\_density                            & $-0.54^{***}$ \\
-                                                          & $(0.15)$      \\
-Count model: Log(theta)                                   & $-0.13$       \\
-                                                          & $(0.55)$      \\
-Zero model: (Intercept)                                   & $11.26$       \\
-                                                          & $(13.70)$     \\
-Zero model: log\_pop\_density                             & $-4.40^{*}$   \\
-                                                          & $(2.23)$      \\
-Zero model: PCT\_not\_speak\_offcial\_language\_at\_home  & $0.43$        \\
-                                                          & $(0.23)$      \\
-Zero model: PCT\_married\_common\_law                     & $0.27^{*}$    \\
-                                                          & $(0.12)$      \\
-Zero model: log\_area                                     & $-4.50^{*}$   \\
-                                                          & $(2.19)$      \\
-Zero model: Freq\_lag                                     & $-18.87^{*}$  \\
-                                                          & $(7.96)$      \\
+Count model: Spatial lag of grocery store count                               & $-1.74^{*}$    \\
+                                                                              & $(0.83)$       \\
+Count model: Percentage of population aged below 24 years old                 & $0.01$         \\
+                                                                              & $(0.03)$       \\
+Count model: Percentage of population aged above 65 years old                 & $0.01$         \\
+                                                                              & $(0.02)$       \\
+Count model: Percentage of population don't know official language            & $0.00$         \\
+                                                                              & $(0.10)$       \\
+Count model: Percentage of population don't speak official language at home   & $0.17^{**}$    \\
+                                                                              & $(0.05)$       \\
+Count model: Percentage of population live in single detached houses          & $-0.01^{*}$    \\
+                                                                              & $(0.01)$       \\
+Count model: Percentage of population have annual total income less than 40K  & $-0.05$        \\
+                                                                              & $(0.03)$       \\
+Count model: Percentage of population have annual total income more than 100K & $-0.02$        \\
+                                                                              & $(0.04)$       \\
+Count model: Percentage of population that are married or live in common-law  & $-0.02$        \\
+                                                                              & $(0.03)$       \\
+Count model: Natural log of population density + 1                            & $-0.54^{***}$  \\
+                                                                              & $(0.15)$       \\
+Zero model: Spatial lag of grocery store count                                & $-18.87^{*}$   \\
+                                                                              & $(7.96)$       \\
+Zero model: Percentage of population don't speak official language at home    & $0.43^{\cdot}$ \\
+                                                                              & $(0.23)$       \\
+Zero model: Percentage of population that are married or live in common-law   & $0.27^{*}$     \\
+                                                                              & $(0.12)$       \\
+Zero model: Natural log of population density + 1                             & $-4.40^{*}$    \\
+                                                                              & $(2.23)$       \\
+Zero model: Natural log of area size in square kilometres                     & $-4.50^{*}$    \\
+                                                                              & $(2.19)$       \\
 \hline
-AIC                                                       & $524.31$      \\
-Log Likelihood                                            & $-244.16$     \\
-Num. obs.                                                 & $876$         \\
+AIC                                                                           & $524.31$       \\
+Log Likelihood                                                                & $-244.16$      \\
+Num. obs.                                                                     & $876$          \\
 \hline
-\multicolumn{2}{l}{\scriptsize{$^{***}p<0.001$; $^{**}p<0.01$; $^{*}p<0.05$}}
+\multicolumn{2}{l}{\tiny{$^{***}p<0.001$; $^{**}p<0.01$; $^{*}p<0.05$; $^{\cdot}p<0.1$}}
 \end{tabular}
-\caption{Statistical models}
+\end{footnotesize}
+\caption{\label{tab66}Regression results}
 \label{table:coefficients}
 \end{center}
 \end{table}

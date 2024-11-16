@@ -131,7 +131,7 @@ grocery_DA$n_neighbour <- apply(dist_m, 1, sum)
 grocery_DA$Freq_lag <- grocery_DA$Freq_sum_lag/grocery_DA$n_neighbour
 ```
 
-```{r, results='asis'}
+```{r, results='hide'}
 # fit a zero inflated negative binomial regression
 m1 <- zeroinfl(Freq ~ Freq_lag + 
                  PCT_aged_under_24 + 
@@ -149,8 +149,44 @@ m1 <- zeroinfl(Freq ~ Freq_lag +
                  log_area +
                  Freq_lag,
                data = grocery_DA, dist = "negbin")
+
+summary(m1)
+```
+
+```{r, results='asis'}
 # render output
-texreg(m1)
+texreg(m1,
+       caption = "\\label{tab66}Regression results",
+       custom.model.names = c("Zero inflated negative binomial model"),
+       fontsize = "footnotesize",
+       stars = c(0.001, 0.01, 0.05, 0.1),
+       custom.coef.map = list(
+         # Count model
+         "Count model: Freq_lag" = "Count model: Spatial lag of grocery store count",
+         "Count model: PCT_aged_under_24" = "Count model: Percentage of population aged below 24 years old",
+         "Count model: PCT_aged_above_65" = "Count model: Percentage of population aged above 65 years old",
+         "Count model: PCT_dont_know_official_language" = "Count model: Percentage of population don't know official language",
+         "Count model: PCT_not_speak_offcial_language_at_home" = "Count model: Percentage of population don't speak official language at home",
+         "Count model: PCT_single_detached" = "Count model: Percentage of population live in single detached houses",
+         "Count model: PCT_income_less_40k" = "Count model: Percentage of population have annual total income less than 40K",
+         "Count model: PCT_income_greater_100k" = "Count model: Percentage of population have annual total income more than 100K",
+         "Count model: PCT_married_common_law" = "Count model: Percentage of population that are married or live in common-law",
+         "Count model: log_pop_density" = "Count model: Natural log of population density + 1",
+         "Count model: log_area" = "Count model: Natural log of area size in square kilometres",
+         # Zero model
+         "Zero model: Freq_lag" = "Zero model: Spatial lag of grocery store count",
+         "Zero model: PCT_aged_under_24" = "Zero model: Percentage of population aged below 24 years old",
+         "Zero model: PCT_aged_above_65" = "Zero model: Percentage of population aged above 65 years old",
+         "Zero model: PCT_dont_know_official_language" = "Zero model: Percentage of population don't know official language",
+         "Zero model: PCT_not_speak_offcial_language_at_home" = "Zero model: Percentage of population don't speak official language at home",
+         "Zero model: PCT_single_detached" = "Zero model: Percentage of population live in single detached houses",
+         "Zero model: PCT_income_less_40k" = "Zero model: Percentage of population have annual total income less than 40K",
+         "Zero model: PCT_income_greater_100k" = "Zero model: Percentage of population have annual total income more than 100K",
+         "Zero model: PCT_married_common_law" = "Zero model: Percentage of population that are married or live in common-law",
+         "Zero model: log_pop_density" = "Zero model: Natural log of population density + 1",
+         "Zero model: log_area" = "Zero model: Natural log of area size in square kilometres"
+        )
+       )
 ```
 
 ############################################################
