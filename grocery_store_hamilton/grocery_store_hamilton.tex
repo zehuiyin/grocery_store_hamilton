@@ -66,6 +66,7 @@ R} % Sets Journal name
 \usepackage{tabularx}
 \usepackage{float}
 \floatplacement{figure}{H}
+\usepackage{bm}
 
 
 
@@ -94,130 +95,236 @@ West},city={Hamilton},postcode={L8S
   It consists of two paragraphs.
   \end{abstract}
     \begin{keyword}
-    Grocery Store \sep 
+    Grocery stores \sep Food environments \sep 
     Hamilton
   \end{keyword}
   
  \end{frontmatter}
 
-\section{Introduction}\label{introduction}
+\section{Introduction and Background}\label{introduction-and-background}
 
-Nice introduction goes here\ldots{}
+Food is a necessity for human beings. In urban areas or large cities,
+residents typically rely on grocery stores for their daily food needs.
+Geographic access to grocery stores and affordable food plays an
+important role in promoting a healthy diet and has implications for
+personal health
+\citep{caspi2012relationship, minaker2016retail, kirkpatrick2014dietary}.
+The ease of accessing grocery stores and obtaining the needed food is
+thus an important topic for both public health and urban planning.
+
+There is extensive literature on food access that examines this topic
+\citep{christian2012using, widener2015spatiotemporal, farber2014temporal, widener2017changes}.
+These analyses mostly focus on the demand side, where consumers navigate
+and choose which retailers to purchase from. However, a gap exists in
+studying how retailers choose the locations of their stores to serve the
+market or the demand.
+
+In this paper, I utilize open-source data from the 2021 Canadian Census
+\citep{census} and OpenStreetMap \citep{osm} to examine the spatial
+pattern of grocery store locations, using Hamilton, Ontario, as a case
+study. The research question is: What areas in Hamilton have more or
+fewer grocery stores compared to other areas?
 
 \section{Data and Methods}\label{data-and-methods}
 
 \subsection{Study Area}\label{study-area}
 
-My study area is Hamilton, Ontario. Figure \ref{fig::study_area} below
-shows the study area.
+My study area is the City of Hamilton, located on the west side of Lake
+Ontario in the province of Ontario. It has a population of 569353
+according to the 2021 Canadian census \citep{census}. The Niagara
+Escarpment runs through the middle of the city, dividing it into two
+parts. Figure \ref{fig:study_area} below shows the study area.
 
 \begin{figure}
 \centering
 \includegraphics{grocery_store_hamilton_files/figure-latex/unnamed-chunk-4-1.pdf}
-\caption{\label{fig::study_area}Study Area: Hamilton, Ontario}
+\caption{\label{fig:study_area}Study Area: Hamilton, Ontario}
 \end{figure}
 
 \subsection{Data Sources}\label{data-sources}
 
-My data used in this project are shown in Table \ref{tab:data_source}
-below.
+I utilize three data sources in this paper, as shown in the Table
+\ref{tab:data_source} below. I gathered grocery store locations in
+Hamilton from OpenStreetMap \citep{osm} via the Overpass API
+\citep{overpass}. The Hamilton Street Railway (HSR) Fall 2024 GTFS
+static data were downloaded from Open Hamilton \citep{hsr_gtfs}. The
+dissemination area spatial data and 2021 Canadian census variables were
+obtained from \citet{census} through the cancensus package in R
+\citep{cancensus}.
 
 \begin{table}[h]
 \centering
 \begin{footnotesize}
 \begin{tabularx}{\textwidth}{XllXl}
 \hline
-Name                                           & Source             & URL                                             & Accessed Date \\
+Name                                           & Source              & URL                                             & Accessed Date \\
 \hline
-Grocery Stores in Hamilton                     & OpenStreetMap      & \url{https://overpass-turbo.eu/index.html}      & 2024-10-04    \\
-HSR Fall 2024 GTFS Static                      & Hamilton Open Data & \url{https://opendata.hamilton.ca/GTFS-Static/} & 2024-10-04    \\
-Dissemination Area and Census Data in Hamilton & Statistics Canada  & \url{https://censusmapper.ca/api}               & 2024-11-16    \\
+Grocery Stores in Hamilton                     & \cite{osm}          & \url{https://overpass-turbo.eu/index.html}      & 2024-10-04    \\
+HSR Fall 2024 GTFS Static                      & \cite{hsr_gtfs}     & \url{https://opendata.hamilton.ca/GTFS-Static/} & 2024-10-04    \\
+Dissemination Area and Census Data in Hamilton & \cite{census}       & \url{https://censusmapper.ca/api}               & 2024-11-16    \\
 \hline
 \end{tabularx}
 \caption{\label{tab:data_source}Data Sources}
 \end{footnotesize}
 \end{table}
 
+To facilitate reproducibility and open science, all the data used in
+this paper have been packaged into an R package \citep{geog712package},
+which is hosted on GitHub. You can access it at
+\url{https://github.com/zehuiyin/geog712package}.
+
 \subsection{Methodology}\label{methodology}
+
+The grocery store locations in Hamilton were intersected and aggregated
+to the census dissemination areas. The dependent variable of interest is
+the count of grocery stores in each dissemination area in Hamilton.
+There are 891 dissemination areas in Hamilton; however, due to data
+missingness, only 876 of them are used in the regression analysis. A
+considerable portion of the dissemination areas in our sample do not
+contain any grocery stores. Therefore, standard count models such as
+Poisson regression would be invalid due to the excessive zero values. To
+model this variable of interest, I fit a hurdle model and a
+zero-inflated negative binomial regression model with spatially lagged
+dependent variables.
+
+The zero-inflated negative binomial regression model follows Equations
+\ref{eq:1} and \ref{eq:2} below \citep{zinb}. The variable specification
+in the hurdle model is exactly the same as in the zero-inflated negative
+binomial regression model. The hurdle model is set up with the zero
+component as a binomial logit model and the count component as a
+truncated negative binomial logit model. I decided to use negative
+binomial regression instead of Poisson regression because the count
+distribution is highly skewed, making it unlikely that the mean and
+variance would be the same for my variable of interest. Additionally,
+due to the large number of zeros in my sample, the zero-inflated
+regression is preferred, as it can generate zero values from two
+sources, unlike the hurdle model, which generates zeros from only one
+source.
+
+\begin{equation}
+\label{eq:1}
+Pr(GroceryStore_i=j) = \begin{cases}
+       \pi_i + (1-\pi_i)g(GroceryStore_i=0) &\quad\text{if } j=0\\
+       (1-\pi_i)g(GroceryStore_i) &\quad\text{if } j>0
+     \end{cases}
+\end{equation}
+
+\begin{equation}
+\label{eq:2}
+\begin{aligned}
+logit(\pi) &= \rho \mathbf{W} GroceryStore + \tilde{\mathbf{x}} \tilde{\boldsymbol{\beta}} \\
+\log\{E[g(GroceryStore)]\} &= \rho \mathbf{W} GroceryStore + \mathbf{x} \boldsymbol{\beta} \\
+g(GroceryStore_i) &\text{is the negative binomial distribution} \\
+\mathbf{W} &\text{: a row-normalized queen contiguity matrix}
+\end{aligned}
+\end{equation}
 
 \section{Results}\label{results}
 
 \subsection{Descriptive Statistics}\label{descriptive-statistics}
 
+Based on the bar chart in Figure \ref{fig:dep}, the distribution of the
+number of grocery stores in dissemination areas in Hamilton is highly
+skewed, with a large number of dissemination areas having no grocery
+stores. According to Figure \ref{fig:descriptive}, most grocery stores
+are located near the centre of Hamilton, within the Niagara Escarpment.
+There are also some dissemination areas at the edge of the city with
+grocery stores. In the right plot, the number of HSR bus stops per
+square kilometre is classified into three categories: low (0 to 50th
+percentile), middle (50th to 75th percentile), and high (75th to 100th
+percentile). The area with the highest transit service is also in the
+centre of Hamilton. Beyond the Niagara Escarpment, there are few transit
+stops.
+
 \begin{figure}
-\centering
-\includegraphics{grocery_store_hamilton_files/figure-latex/unnamed-chunk-9-1.pdf}
-\caption{\label{fig::grocery_DA}Grocery Store Counts at Dissemination
-Areas in Hamilton, Ontario}
+
+{\centering \includegraphics[width=4in,height=3in]{./images/dep} 
+
+}
+
+\caption{\label{fig:dep}Number of Grocery Stores in Dissemination Areas in Hamilton}\label{fig:unnamed-chunk-10}
 \end{figure}
 
 \begin{figure}
-\centering
-\includegraphics{grocery_store_hamilton_files/figure-latex/unnamed-chunk-10-1.pdf}
-\caption{\label{fig::hsr_stops}HSR Bus Stop Number at Dissemination
-Areas in Hamilton, Ontario}
+
+{\centering \includegraphics[width=6in,height=2.5in]{./images/descriptive} 
+
+}
+
+\caption{\label{fig:descriptive}Number of Grocery Stores (left) and HSR Bus Stops (right) at Dissemination Areas in Hamilton, Ontario}\label{fig:unnamed-chunk-13}
 \end{figure}
 
-\section{Zero Inflated Negative Binomial Regression
-Results}\label{zero-inflated-negative-binomial-regression-results}
+\section{Regression Results}\label{regression-results}
 
-Table \ref{tab:regression_results} below shows the regression results.
+The hurdle model has a McFadden pseudo \(R^2\) of 0.15, while the
+zero-inflated negative binomial regression model has a McFadden pseudo
+\(R^2\) of 0.17. Table \ref{tab:regression_results} below presents the
+regression results.
 
 \begin{table}
 \begin{center}
 \begin{footnotesize}
-\begin{tabular}{l c}
+\begin{tabular}{l c c}
 \hline
- & Zero inflated negative binomial model \\
+ & Hurdle model & Zero-inflated model \\
 \hline
-Count model: Spatial lag of grocery store count                               & $-2.99^{***}$   \\
-                                                                              & $(0.84)$        \\
-Count model: Percentage of population aged below 24 years old                 & $0.03$          \\
-                                                                              & $(0.04)$        \\
-Count model: Percentage of population aged above 65 years old                 & $0.02$          \\
-                                                                              & $(0.02)$        \\
-Count model: Percentage of population don't know official language            & $-0.03$         \\
-                                                                              & $(0.10)$        \\
-Count model: Percentage of population don't speak official language at home   & $0.17^{**}$     \\
-                                                                              & $(0.06)$        \\
-Count model: Percentage of population live in single detached houses          & $-0.01^{\cdot}$ \\
-                                                                              & $(0.01)$        \\
-Count model: Percentage of population have annual total income less than 40K  & $-0.03$         \\
-                                                                              & $(0.03)$        \\
-Count model: Percentage of population have annual total income more than 100K & $-0.02$         \\
-                                                                              & $(0.04)$        \\
-Count model: Percentage of population that are married or live in common-law  & $0.03$          \\
-                                                                              & $(0.03)$        \\
-Count model: Natural log of (population density + 1)                          & $-0.38^{*}$     \\
-                                                                              & $(0.17)$        \\
-Count model: Natural log of distance from DA centroid to Hamilton downtown    & $-0.50^{**}$    \\
-                                                                              & $(0.19)$        \\
-Zero model: Spatial lag of grocery store count                                & $-8.62^{*}$     \\
-                                                                              & $(3.38)$        \\
-Zero model: Percentage of population don't speak official language at home    & $0.14$          \\
-                                                                              & $(0.11)$        \\
-Zero model: Percentage of population that are married or live in common-law   & $0.11$          \\
-                                                                              & $(0.07)$        \\
-Zero model: Natural log of (population density + 1)                           & $-1.71^{*}$     \\
-                                                                              & $(0.74)$        \\
-Zero model: Number of HSR bus stops (50-75 percentile)                        & $-2.73^{***}$   \\
-                                                                              & $(0.72)$        \\
-Zero model: Number of HSR bus stops (75-100 percentile)                       & $-1.50^{*}$     \\
-                                                                              & $(0.74)$        \\
-Zero model: Natural log of area size in square kilometres                     & $-2.36^{**}$    \\
-                                                                              & $(0.76)$        \\
+Count model: Spatial lag of grocery store count                               & $-2.05$      & $-2.99^{***}$   \\
+                                                                              & $(2.37)$     & $(0.84)$        \\
+Count model: Percentage of population aged below 24 years old                 & $-0.06$      & $0.03$          \\
+                                                                              & $(0.11)$     & $(0.04)$        \\
+Count model: Percentage of population aged above 65 years old                 & $-0.02$      & $0.02$          \\
+                                                                              & $(0.05)$     & $(0.02)$        \\
+Count model: Percentage of population don't know official language            & $-0.11$      & $-0.03$         \\
+                                                                              & $(0.26)$     & $(0.10)$        \\
+Count model: Percentage of population don't speak official language at home   & $0.08$       & $0.17^{**}$     \\
+                                                                              & $(0.12)$     & $(0.06)$        \\
+Count model: Percentage of population live in single detached houses          & $-0.01$      & $-0.01^{\cdot}$ \\
+                                                                              & $(0.02)$     & $(0.01)$        \\
+Count model: Percentage of population have annual total income less than 40K  & $0.02$       & $-0.03$         \\
+                                                                              & $(0.09)$     & $(0.03)$        \\
+Count model: Percentage of population have annual total income more than 100K & $-0.04$      & $-0.02$         \\
+                                                                              & $(0.10)$     & $(0.04)$        \\
+Count model: Percentage of population that are married or live in common-law  & $0.02$       & $0.03$          \\
+                                                                              & $(0.08)$     & $(0.03)$        \\
+Count model: Natural log of (population density + 1)                          & $-0.59$      & $-0.38^{*}$     \\
+                                                                              & $(0.37)$     & $(0.17)$        \\
+Count model: Natural log of distance from DA centroid to Hamilton downtown    & $-0.25$      & $-0.50^{**}$    \\
+                                                                              & $(0.43)$     & $(0.19)$        \\
+Zero model: Spatial lag of grocery store count                                & $0.02$       & $-8.62^{*}$     \\
+                                                                              & $(0.58)$     & $(3.38)$        \\
+Zero model: Percentage of population don't speak official language at home    & $0.10^{**}$  & $0.14$          \\
+                                                                              & $(0.03)$     & $(0.11)$        \\
+Zero model: Percentage of population that are married or live in common-law   & $-0.04^{*}$  & $0.11$          \\
+                                                                              & $(0.02)$     & $(0.07)$        \\
+Zero model: Natural log of (population density + 1)                           & $0.73^{*}$   & $-1.71^{*}$     \\
+                                                                              & $(0.29)$     & $(0.74)$        \\
+Zero model: Number of HSR bus stops (50-75 percentile)                        & $2.15^{***}$ & $-2.73^{***}$   \\
+                                                                              & $(0.43)$     & $(0.72)$        \\
+Zero model: Number of HSR bus stops (75-100 percentile)                       & $1.55^{**}$  & $-1.50^{*}$     \\
+                                                                              & $(0.49)$     & $(0.74)$        \\
+Zero model: Natural log of area size in square kilometres                     & $1.39^{***}$ & $-2.36^{**}$    \\
+                                                                              & $(0.29)$     & $(0.76)$        \\
 \hline
-AIC                                                                           & $508.91$        \\
-Log Likelihood                                                                & $-233.45$       \\
-Num. obs.                                                                     & $876$           \\
+AIC                                                                           & $522.36$     & $508.91$        \\
+Log Likelihood                                                                & $-240.18$    & $-233.45$       \\
+Num. obs.                                                                     & $876$        & $876$           \\
 \hline
-\multicolumn{2}{l}{\tiny{$^{***}p<0.001$; $^{**}p<0.01$; $^{*}p<0.05$; $^{\cdot}p<0.1$}}
+\multicolumn{3}{l}{\tiny{$^{***}p<0.001$; $^{**}p<0.01$; $^{*}p<0.05$; $^{\cdot}p<0.1$}}
 \end{tabular}
 \end{footnotesize}
 \caption{Regression results}
 \label{tab:regression_results}
 \end{center}
 \end{table}
+
+\begin{figure}
+
+{\centering \includegraphics[width=6.4in,height=2.4in]{./images/margin} 
+
+}
+
+\caption{\label{fig:margin}Conditional Prediction Plot for the Zero-inflated Negative Binomial Regression Model}\label{fig:unnamed-chunk-18}
+\end{figure}
 
 \section{Discussion and Conclusion}\label{discussion-and-conclusion}
 

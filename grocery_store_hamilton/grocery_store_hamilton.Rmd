@@ -18,7 +18,8 @@ abstract: |
 
   It consists of two paragraphs.
 keywords: 
-  - Grocery Store
+  - Grocery stores
+  - Food environments
   - Hamilton
 journal: "GEOG 712 Reproducible Research Workflow with GitHub and R"
 date: "`r Sys.Date()`"
@@ -33,21 +34,22 @@ header-includes: |
   \usepackage{tabularx}
   \usepackage{float}
   \floatplacement{figure}{H}
+  \usepackage{bm}
 output: 
   rticles::elsevier_article:
     keep_tex: true
     citation_package: natbib
 ---
 
-# Introduction
+# Introduction and Background
 
-Nice introduction goes here...
+Food is a necessity for human beings. In urban areas or large cities, residents typically rely on grocery stores for their daily food needs. Geographic access to grocery stores and affordable food plays an important role in promoting a healthy diet and has implications for personal health [@caspi2012relationship; @minaker2016retail; @kirkpatrick2014dietary]. The ease of accessing grocery stores and obtaining the needed food is thus an important topic for both public health and urban planning.
+
+There is extensive literature on food access that examines this topic [@christian2012using; @widener2015spatiotemporal; @farber2014temporal; @widener2017changes]. These analyses mostly focus on the demand side, where consumers navigate and choose which retailers to purchase from. However, a gap exists in studying how retailers choose the locations of their stores to serve the market or the demand.
+
+In this paper, I utilize open-source data from the 2021 Canadian Census [@census] and OpenStreetMap [@osm] to examine the spatial pattern of grocery store locations, using Hamilton, Ontario, as a case study. The research question is: What areas in Hamilton have more or fewer grocery stores compared to other areas?
 
 # Data and Methods
-
-## Study Area
-
-My study area is Hamilton, Ontario. Figure \ref{fig::study_area} below shows the study area.
 
 ```{r, echo=FALSE}
 # no code chunk echo or message
@@ -69,6 +71,8 @@ library(mapview)
 library(tidytransit)
 library(tmap)
 library(tmaptools)
+library(marginaleffects)
+library(patchwork)
 ```
 
 ```{r}
@@ -99,7 +103,11 @@ hsr_stops <- st_transform(hsr_stops, crs = 26917)
 hamilton_basemap <- read_osm(grocery_DA, type = "esri-shaded")
 ```
 
-```{r, fig.cap="\\label{fig::study_area}Study Area: Hamilton, Ontario", fig.dpi=300, fig.height=4}
+## Study Area
+
+My study area is the City of Hamilton, located on the west side of Lake Ontario in the province of Ontario. It has a population of `r as.character(sum(grocery_DA$v_CA21_1..Population..2021))` according to the 2021 Canadian census [@census]. The Niagara Escarpment runs through the middle of the city, dividing it into two parts. Figure \ref{fig:study_area} below shows the study area.
+
+```{r, fig.cap="\\label{fig:study_area}Study Area: Hamilton, Ontario", fig.dpi=300, fig.height=4}
 # Create a data frame with coordinates for the text
 text_coords <- data.frame(
   x = c(-79.87024950208229),  # Longitude
@@ -125,7 +133,7 @@ tmap_save(filename = "images/study_area.png")
 
 ## Data Sources
 
-My data used in this project are shown in Table \ref{tab:data_source} below.
+I utilize three data sources in this paper, as shown in the Table \ref{tab:data_source} below. I gathered grocery store locations in Hamilton from OpenStreetMap [@osm] via the Overpass API [@overpass]. The Hamilton Street Railway (HSR) Fall 2024 GTFS static data were downloaded from Open Hamilton [@hsr_gtfs]. The dissemination area spatial data and 2021 Canadian census variables were obtained from @census through the cancensus package in R [@cancensus].
 
 ```{=tex}
 \begin{table}[h]
@@ -133,11 +141,11 @@ My data used in this project are shown in Table \ref{tab:data_source} below.
 \begin{footnotesize}
 \begin{tabularx}{\textwidth}{XllXl}
 \hline
-Name                                           & Source             & URL                                             & Accessed Date \\
+Name                                           & Source              & URL                                             & Accessed Date \\
 \hline
-Grocery Stores in Hamilton                     & OpenStreetMap      & \url{https://overpass-turbo.eu/index.html}      & 2024-10-04    \\
-HSR Fall 2024 GTFS Static                      & Hamilton Open Data & \url{https://opendata.hamilton.ca/GTFS-Static/} & 2024-10-04    \\
-Dissemination Area and Census Data in Hamilton & Statistics Canada  & \url{https://censusmapper.ca/api}               & 2024-11-16    \\
+Grocery Stores in Hamilton                     & \cite{osm}          & \url{https://overpass-turbo.eu/index.html}      & 2024-10-04    \\
+HSR Fall 2024 GTFS Static                      & \cite{hsr_gtfs}     & \url{https://opendata.hamilton.ca/GTFS-Static/} & 2024-10-04    \\
+Dissemination Area and Census Data in Hamilton & \cite{census}       & \url{https://censusmapper.ca/api}               & 2024-11-16    \\
 \hline
 \end{tabularx}
 \caption{\label{tab:data_source}Data Sources}
@@ -145,7 +153,35 @@ Dissemination Area and Census Data in Hamilton & Statistics Canada  & \url{https
 \end{table}
 ```
 
+To facilitate reproducibility and open science, all the data used in this paper have been packaged into an R package [@geog712package], which is hosted on GitHub. You can access it at <https://github.com/zehuiyin/geog712package>.
+
 ## Methodology
+
+The grocery store locations in Hamilton were intersected and aggregated to the census dissemination areas. The dependent variable of interest is the count of grocery stores in each dissemination area in Hamilton. There are 891 dissemination areas in Hamilton; however, due to data missingness, only 876 of them are used in the regression analysis. A considerable portion of the dissemination areas in our sample do not contain any grocery stores. Therefore, standard count models such as Poisson regression would be invalid due to the excessive zero values. To model this variable of interest, I fit a hurdle model and a zero-inflated negative binomial regression model with spatially lagged dependent variables.
+
+The zero-inflated negative binomial regression model follows Equations \ref{eq:1} and \ref{eq:2} below [@zinb]. The variable specification in the hurdle model is exactly the same as in the zero-inflated negative binomial regression model. The hurdle model is set up with the zero component as a binomial logit model and the count component as a truncated negative binomial logit model. I decided to use negative binomial regression instead of Poisson regression because the count distribution is highly skewed, making it unlikely that the mean and variance would be the same for my variable of interest. Additionally, due to the large number of zeros in my sample, the zero-inflated regression is preferred, as it can generate zero values from two sources, unlike the hurdle model, which generates zeros from only one source.
+
+```{=tex}
+\begin{equation}
+\label{eq:1}
+Pr(GroceryStore_i=j) = \begin{cases}
+       \pi_i + (1-\pi_i)g(GroceryStore_i=0) &\quad\text{if } j=0\\
+       (1-\pi_i)g(GroceryStore_i) &\quad\text{if } j>0
+     \end{cases}
+\end{equation}
+```
+
+```{=tex}
+\begin{equation}
+\label{eq:2}
+\begin{aligned}
+logit(\pi) &= \rho \mathbf{W} GroceryStore + \tilde{\mathbf{x}} \tilde{\boldsymbol{\beta}} \\
+\log\{E[g(GroceryStore)]\} &= \rho \mathbf{W} GroceryStore + \mathbf{x} \boldsymbol{\beta} \\
+g(GroceryStore_i) &\text{is the negative binomial distribution} \\
+\mathbf{W} &\text{: a row-normalized queen contiguity matrix}
+\end{aligned}
+\end{equation}
+```
 
 # Results
 
@@ -255,22 +291,43 @@ grocery_DA$n_neighbour <- apply(dist_m, 1, sum)
 grocery_DA$Freq_lag <- grocery_DA$Freq_sum_lag/grocery_DA$n_neighbour
 ```
 
-```{r, fig.cap="\\label{fig::grocery_DA}Grocery Store Counts at Dissemination Areas in Hamilton, Ontario", fig.dpi=300, fig.height=4}
-tm_shape(hamilton_basemap) + tm_rgb() + 
+```{r, results='hide'}
+p_dep <- grocery_DA |> st_drop_geometry() |> 
+  count(Freq) |>
+  mutate(PCT = n/sum(n)*100) |>
+  ggplot(aes(x = Freq, y = PCT)) +
+  geom_col(fill = c("#d0d1e6",
+                    "#a6bddb",
+                    "#3690c0",
+                    "#045a8d",
+                    "#023858")) + 
+  labs(x = "Number of Grocery Stores",
+       y = "Percentage") +
+  theme_bw()
+
+ggsave("./images/dep.png", p_dep, width = 4, height = 3, dpi = 300)
+```
+
+Based on the bar chart in Figure \ref{fig:dep}, the distribution of the number of grocery stores in dissemination areas in Hamilton is highly skewed, with a large number of dissemination areas having no grocery stores. According to Figure \ref{fig:descriptive}, most grocery stores are located near the centre of Hamilton, within the Niagara Escarpment. There are also some dissemination areas at the edge of the city with grocery stores. In the right plot, the number of HSR bus stops per square kilometre is classified into three categories: low (0 to 50th percentile), middle (50th to 75th percentile), and high (75th to 100th percentile). The area with the highest transit service is also in the centre of Hamilton. Beyond the Niagara Escarpment, there are few transit stops.
+
+```{r, fig.cap="\\label{fig:dep}Number of Grocery Stores in Dissemination Areas in Hamilton", out.height="3in", out.width="4in", fig.align='center'}
+knitr::include_graphics("./images/dep.png")
+```
+
+```{r}
+descriptive1 <- tm_shape(hamilton_basemap) + tm_rgb() + 
   tm_shape(grocery_DA) + 
   tm_fill(col = "Freq", title = "Number of\nGrocery Stores") +
   tm_compass() + tm_scale_bar() +
   tm_layout(legend.position = c("right", "top"),
             legend.bg.color = "grey90",
             attr.position = c("left", "bottom"))
-
-tmap_save(filename = "images/grocery_DA.png")
 ```
 
-```{r, fig.cap="\\label{fig::hsr_stops}HSR Bus Stop Number at Dissemination Areas in Hamilton, Ontario", fig.dpi=300, fig.height=4}
-tm_shape(hamilton_basemap) + tm_rgb() + 
+```{r}
+descriptive2 <- tm_shape(hamilton_basemap) + tm_rgb() + 
   tm_shape(grocery_DA) + 
-  tm_fill(col = "hsr_level", title = "HSR Bus\nStop Number",
+  tm_fill(col = "hsr_level", title = "Number of\nHSR Bus Stops",
           labels = c("Low", "Middle", "High"),
           palette = "seq") +
   tm_compass() + tm_scale_bar() +
@@ -278,12 +335,18 @@ tm_shape(hamilton_basemap) + tm_rgb() +
             legend.bg.color = "grey90",
             attr.position = c("left", "bottom"))
 
-tmap_save(filename = "images/hsr_stops.png")
+descriptive <- tmap_arrange(descriptive1, descriptive2, nrow = 1,
+                            asp = 1.09)
+
+tmap_save(descriptive, "./images/descriptive.png", width = 12,
+          height = 5)
 ```
 
-# Zero Inflated Negative Binomial Regression Results
+```{r, fig.cap="\\label{fig:descriptive}Number of Grocery Stores (left) and HSR Bus Stops (right) at Dissemination Areas in Hamilton, Ontario", out.height="2.5in", out.width="6in", fig.align='center'}
+knitr::include_graphics("./images/descriptive.png")
+```
 
-Table \ref{tab:regression_results} below shows the regression results.
+# Regression Results
 
 ```{r, results='hide'}
 # fit a zero inflated negative binomial regression
@@ -304,17 +367,49 @@ m1 <- zeroinfl(Freq ~ Freq_lag +
                  hsr_level +
                  log_area +
                  Freq_lag,
-               data = grocery_DA, dist = "negbin")
+               data = grocery_DA, 
+               dist = "negbin")
 
 summary(m1)
+
+pR2(m1)
 ```
+
+```{r, results='hide'}
+m2 <- hurdle(Freq ~ Freq_lag + 
+                 PCT_aged_under_24 + 
+                 PCT_aged_above_65 +
+                 PCT_dont_know_official_language +
+                 PCT_not_speak_offcial_language_at_home +
+                 PCT_single_detached +
+                 PCT_income_less_40k +
+                 PCT_income_greater_100k + 
+                 PCT_married_common_law + 
+                 log_dist_to_downtown +
+                 log_pop_density |
+                 log_pop_density +
+                 PCT_not_speak_offcial_language_at_home + 
+                 PCT_married_common_law +
+                 hsr_level +
+                 log_area +
+                 Freq_lag,
+               data = grocery_DA, 
+               dist = "negbin")
+
+summary(m2)
+
+pR2(m2)
+```
+
+The hurdle model has a McFadden pseudo $R^2$ of `r round(pR2(m2)[[4]], digits = 2)`, while the zero-inflated negative binomial regression model has a McFadden pseudo $R^2$ of `r round(pR2(m1)[[4]], digits = 2)`. Table \ref{tab:regression_results} below presents the regression results.
 
 ```{r, results='asis'}
 # render output
-texreg(m1,
+texreg(list(m2, m1),
        caption = "Regression results",
        label = "tab:regression_results",
-       custom.model.names = c("Zero inflated negative binomial model"),
+       custom.model.names = c("Hurdle model",
+                              "Zero-inflated model"),
        fontsize = "footnotesize",
        stars = c(0.001, 0.01, 0.05, 0.1),
        custom.coef.map = list(
@@ -350,6 +445,70 @@ texreg(m1,
          "Zero model: log_area" = "Zero model: Natural log of area size in square kilometres"
         )
        )
+```
+
+```{r, results='hide'}
+p1 <- plot_predictions(m1, condition = c("Freq_lag", "hsr_level")) +
+  scale_color_manual(name = "Number of\nHSR Bus Stops",
+                     values = c(
+                       "low" = "#a6bddb",
+                       "mid" = "#3690c0",
+                       "high" = "#023858"
+                     ),
+                     labels = c(
+                       "Low",
+                       "Middle",
+                       "High"
+                     )) +
+  scale_fill_manual(name = "Number of\nHSR Bus Stops",
+                     values = c(
+                       "low" = "#a6bddb",
+                       "mid" = "#3690c0",
+                       "high" = "#023858"
+                     ),
+                     labels = c(
+                       "Low",
+                       "Middle",
+                       "High"
+                     )) +
+  labs(x = "Spatial Lag of Number of Grocery Stores",
+       y = "Number of Grocery Stores") +
+  theme_bw()
+
+p2 <- plot_predictions(m1, condition = c("log_area", "hsr_level")) +
+  scale_color_manual(name = "Number of\nHSR Bus Stops",
+                     values = c(
+                       "low" = "#a6bddb",
+                       "mid" = "#3690c0",
+                       "high" = "#023858"
+                     ),
+                     labels = c(
+                       "Low",
+                       "Middle",
+                       "High"
+                     )) +
+  scale_fill_manual(name = "Number of\nHSR Bus Stops",
+                     values = c(
+                       "low" = "#a6bddb",
+                       "mid" = "#3690c0",
+                       "high" = "#023858"
+                     ),
+                     labels = c(
+                       "Low",
+                       "Middle",
+                       "High"
+                     )) +
+  labs(x = "Natural Log of Area Size in Square Kilometres",
+       y = "Number of Grocery Stores") +
+  theme_bw()
+
+p3 <- p1 + p2 + plot_layout(guides = "collect")
+
+ggsave("./images/margin.png", p3, width = 8, height = 3, dpi = 300)
+```
+
+```{r, fig.cap="\\label{fig:margin}Conditional Prediction Plot for the Zero-inflated Negative Binomial Regression Model", out.height="2.4in", out.width="6.4in", fig.align='center'}
+knitr::include_graphics("./images/margin.png")
 ```
 
 # Discussion and Conclusion
