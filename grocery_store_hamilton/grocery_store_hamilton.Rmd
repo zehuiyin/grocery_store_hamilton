@@ -100,7 +100,8 @@ hsr_stops <- st_as_sf(hsr$stops,
 hsr_stops <- st_transform(hsr_stops, crs = 26917)
 
 # get base map for hamilton
-hamilton_basemap <- read_osm(grocery_DA, type = "esri-shaded")
+hamilton_basemap <- read_osm(grocery_DA, 
+                             type = "https://a.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}.png")
 ```
 
 ## Study Area
@@ -346,7 +347,7 @@ tmap_save(descriptive, "./images/descriptive.png", width = 12,
 knitr::include_graphics("./images/descriptive.png")
 ```
 
-# Regression Results
+## Regression Results
 
 ```{r, results='hide'}
 # fit a zero inflated negative binomial regression
