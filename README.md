@@ -13,6 +13,8 @@ This project was the final project for the course
 [GEOG 712 Reproducible Research Workflow with GitHub and R](https://academiccalendars.romcmaster.ca/preview_course.php?catoid=55&coid=274877) 
 at McMaster University in Fall 2024.
 
+You can access the paper [here](https://raw.githubusercontent.com/zehuiyin/grocery_store_hamilton/refs/heads/main/grocery_store_hamilton/grocery_store_hamilton.pdf).
+
 ## Abstract:
 
 ## Research Questions:

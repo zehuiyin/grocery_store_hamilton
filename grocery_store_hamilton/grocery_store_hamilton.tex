@@ -148,8 +148,8 @@ I utilize three data sources in this paper, as shown in the Table
 Hamilton from OpenStreetMap \citep{osm} via the Overpass API
 \citep{overpass}. The Hamilton Street Railway (HSR) Fall 2024 GTFS
 static data were downloaded from Open Hamilton \citep{hsr_gtfs}. The
-dissemination area spatial data and 2021 Canadian census variables were
-obtained from \citet{census} through the cancensus package in R
+dissemination area (DA) spatial data and 2021 Canadian census variables
+were obtained from \citet{census} through the cancensus package in R
 \citep{cancensus}.
 
 \begin{table}[h]
@@ -256,10 +256,11 @@ stops.
 
 \section{Regression Results}\label{regression-results}
 
-The hurdle model has a McFadden pseudo \(R^2\) of 0.15, while the
-zero-inflated negative binomial regression model has a McFadden pseudo
-\(R^2\) of 0.17. Table \ref{tab:regression_results} below presents the
-regression results.
+The regressions are estimated using the maximum likelihood method with
+the R package pscl \citep{pscl}. The hurdle model has a McFadden pseudo
+\(R^2\) of 0.15, while the zero-inflated negative binomial regression
+model has a McFadden pseudo \(R^2\) of 0.17. Table
+\ref{tab:regression_results} below presents the regression results.
 
 \begin{table}
 \begin{center}
@@ -317,14 +318,78 @@ Num. obs.                                                                     & 
 \end{center}
 \end{table}
 
+Both models have the same variable specification. Almost all the
+variables in the hurdle model's zero component are significant, while no
+variables in its count component are significant. Meanwhile, the
+zero-inflated negative binomial regression model has significant
+variables in both the zero and count components. Considering that the
+pseudo \(R^2\) for the zero-inflated model is also higher than that of
+the hurdle model, the zero-inflated model provides a better fit compared
+to the hurdle model. Therefore, in the following sections, I will focus
+on interpreting the zero-inflated model.
+
+The zero component in the zero-inflated negative binomial regression is
+a binary logit model predicting the probability of zero inflation. Thus,
+a positive coefficient indicates that the variable is contributing
+positively or increasing the probability of a specific dissemination
+area having zero grocery stores, while a negative coefficient suggests
+the opposite. The count component in the model is a negative binomial
+regression predicting the number of grocery stores in a dissemination
+area. Therefore, a positive coefficient indicates that an increase in
+the variable's value is associated with an increase in the expected
+count of grocery stores in that specific dissemination area.
+
+The spatial lagged term of grocery store counts is a significant
+negative predictor in both components of the model. This indicates that
+a higher number of grocery stores in neighbouring dissemination areas
+would lower the number of grocery stores in the specific dissemination
+area, while it would reduce the probability that the specific
+dissemination area would have zero grocery stores. Thus, it has a
+non-monotonic effect on grocery store counts. Similarly, the natural log
+of population density plus one also has a significant negative effect on
+both components of the model. Additionally, the percentage of the
+population that does not speak an official language at home is
+significantly positively associated with more grocery stores. The
+percentage of the population living in single detached houses and the
+natural log of distance from the dissemination area centroid to Hamilton
+downtown both decrease the expected number of grocery stores in the
+dissemination area.
+
+Regarding the zero component, the 50-75 percentile and 75-100 percentile
+in the number of HSR bus stops are significantly associated with a lower
+probability of having zero grocery stores compared to the reference
+category (0-50 percentile). Meanwhile, as the area size of the
+dissemination area increases, the probability of having zero grocery
+stores decreases.
+
 \begin{figure}
 
-{\centering \includegraphics[width=6.4in,height=2.4in]{./images/margin} 
+{\centering \includegraphics[width=6.3in,height=2.1in]{./images/margin} 
 
 }
 
 \caption{\label{fig:margin}Conditional Prediction Plot for the Zero-inflated Negative Binomial Regression Model}\label{fig:unnamed-chunk-18}
 \end{figure}
+
+Figure \ref{fig:margin} above shows the prediction plot for the
+zero-inflated model. The spatial lagged term and population density
+exhibit non-monotonic effects on grocery store counts. As the number of
+grocery stores in neighboring dissemination areas increases, holding all
+else constant, the expected grocery store count first increases and then
+decreases. Similarly, as the population density in the dissemination
+area increases, the expected grocery store count first increases and
+then decreases.
+
+Dissemination areas with the number of HSR bus stops in the 50-75th
+percentile have the highest average grocery store count compared to the
+other two levels. It is not surprising that dissemination areas with the
+lowest transit access have the lowest expected grocery store count.
+
+The model predicts that as the size of the dissemination area increases
+from approximately 0.14 to 1 square kilometres, holding all else
+constant, there would be an expected increase in the grocery store
+count. However, as the area size further increases or decreases, the
+grocery store count does not change significantly.
 
 \section{Discussion and Conclusion}\label{discussion-and-conclusion}
 
