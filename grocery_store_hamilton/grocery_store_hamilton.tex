@@ -259,8 +259,10 @@ stops.
 The regressions are estimated using the maximum likelihood method with
 the R package pscl \citep{pscl}. The hurdle model has a McFadden pseudo
 \(R^2\) of 0.15, while the zero-inflated negative binomial regression
-model has a McFadden pseudo \(R^2\) of 0.17. Table
-\ref{tab:regression_results} below presents the regression results.
+model has a McFadden pseudo \(R^2\) of 0.17. A pseudo \(R^2\) around
+0.17 is relatively small but common in this type of model and in social
+science. Table \ref{tab:regression_results} below presents the
+regression results.
 
 \begin{table}
 \begin{center}
@@ -392,6 +394,72 @@ count. However, as the area size further increases or decreases, the
 grocery store count does not change significantly.
 
 \section{Discussion and Conclusion}\label{discussion-and-conclusion}
+
+Based on the regression results, I found that grocery stores in Hamilton
+tend to be located in census dissemination areas where the neighbouring
+dissemination areas have, on average, 0.4 grocery stores. If
+neighbouring dissemination areas have more or fewer grocery stores on
+average, the expected number of grocery stores in that dissemination
+area decreases. An excess of grocery stores in nearby dissemination
+areas likely saturates the market, reducing the demand for new stores.
+Conversely, a lack of grocery stores in neighbouring areas might
+indicate an overall low demand in the local geography, which is also
+associated with a lower expected number of grocery stores in the
+specific census dissemination area. Additionally, evidence indicates
+that grocery stores tend to be located in dissemination areas with
+moderate population densities, approximately 2980.96. Low population
+density suggests a smaller market demand, while high population density
+might be associated with high land prices, constituting a high fixed
+cost for operating a grocery store.
+
+As the dissemination area size increases to about 1 square kilometre, it
+exhibits the highest predicted number of grocery stores, indicating that
+a sufficient dissemination area size is needed for operating a grocery
+store. However, further increases in dissemination area size do not
+significantly impact the number of grocery stores, likely because many
+large dissemination areas in Hamilton are suburban areas around the
+city's edge with no grocery stores. The number of HSR bus stops is
+positively associated with the presence of grocery stores in a specific
+dissemination area, indicating that areas with better transit access are
+more likely to have grocery stores. Better transit access increases the
+potential catchment area of a grocery store, attracting more customers.
+
+I also found that grocery stores tend to be located in areas with a
+higher percentage of the population that does not speak an official
+language at home, while the presence of single detached houses and the
+distance to Hamilton downtown are negatively associated with the
+presence of grocery stores. Non-English or French-speaking residents in
+Hamilton are more likely to be newcomers with limited mobility options
+and might choose to live in areas where they can easily access food.
+This could be due to institutional factors, as areas with many single
+detached houses and those far from Hamilton downtown might be
+residential zones where commercial activity is limited.
+
+In this paper, I utilized open data to examine the spatial locations of
+grocery stores in Hamilton, Ontario. I found noticeable spatial patterns
+and effects in grocery store locations. Grocery stores tend to cluster
+together in nearby dissemination areas, but when there are too many
+grocery stores, they are more likely to disperse. The number of grocery
+stores is also significantly associated with population density,
+dissemination area size, the percentage of residents who do not speak an
+official language at home and live in single detached houses, and the
+distance to Hamilton downtown.
+
+There are some limitations in this paper. Euclidean distances were used
+to measure the distance from the dissemination area centroid to Hamilton
+downtown, but a network distance could provide more accurate
+measurements. Additionally, distances could be computed using more
+sample points within a dissemination area instead of relying solely on
+the centroid. The model is based on a cross-sectional dataset, so no
+causal relationships can be concluded in this context. Utilizing a panel
+dataset with several years of census data could better shed light on the
+causal relationships between these variables and the number of grocery
+stores. Furthermore, the analysis treated all grocery stores equally,
+regardless of their physical size or sales volume. Using additional data
+sources to better capture the size of these businesses could help
+improve the model.
+
+\pagebreak
 
 \renewcommand\refname{References}
 \bibliography{mybibfile.bib}
