@@ -90,9 +90,23 @@ West},city={Hamilton},postcode={L8S
     \cortext[cor1]{Corresponding author}
   
   \begin{abstract}
-  This is the abstract.
-
-  It consists of two paragraphs.
+  Grocery stores play a crucial role, especially for urban residents, as
+  they provide essential daily food supplies. The locations of grocery
+  stores are not randomly chosen but are the result of detailed
+  decision-making processes by grocery companies. Understanding the
+  locations these grocers choose to establish themselves is important
+  for public health and urban planning, as geographic access to grocery
+  stores impacts personal health. In this paper, I utilize open data to
+  examine grocery store locations in Hamilton, Ontario, as a case study.
+  A zero-inflated negative binomial regression model with spatial lagged
+  terms is fitted and estimated using maximum likelihood methods. I
+  identified noticeable spatial patterns in grocery store locations.
+  Grocery stores tend to cluster in nearby dissemination areas, but when
+  there are too many grocery stores, they tend to disperse. The number
+  of grocery stores is also significantly associated with population
+  density, dissemination area size, the percentage of residents who do
+  not speak an official language at home, those living in single
+  detached houses, and the distance to Hamilton downtown.
   \end{abstract}
     \begin{keyword}
     Grocery stores \sep Food environments \sep 
@@ -122,8 +136,8 @@ market or the demand.
 In this paper, I utilize open-source data from the 2021 Canadian Census
 \citep{census} and OpenStreetMap \citep{osm} to examine the spatial
 pattern of grocery store locations, using Hamilton, Ontario, as a case
-study. The research question is: What areas in Hamilton have more or
-fewer grocery stores compared to other areas?
+study. The research question for this paper is: What areas in Hamilton
+have more or fewer grocery stores compared to other areas?
 
 \section{Data and Methods}\label{data-and-methods}
 
@@ -407,10 +421,10 @@ indicate an overall low demand in the local geography, which is also
 associated with a lower expected number of grocery stores in the
 specific census dissemination area. Additionally, evidence indicates
 that grocery stores tend to be located in dissemination areas with
-moderate population densities, approximately 2980.96. Low population
-density suggests a smaller market demand, while high population density
-might be associated with high land prices, constituting a high fixed
-cost for operating a grocery store.
+moderate population densities, approximately 2980.96 per square
+kilometre. Low population density suggests a smaller market demand,
+while high population density might be associated with high land prices,
+constituting a high fixed cost for operating a grocery store.
 
 As the dissemination area size increases to about 1 square kilometre, it
 exhibits the highest predicted number of grocery stores, indicating that
@@ -431,19 +445,19 @@ distance to Hamilton downtown are negatively associated with the
 presence of grocery stores. Non-English or French-speaking residents in
 Hamilton are more likely to be newcomers with limited mobility options
 and might choose to live in areas where they can easily access food.
-This could be due to institutional factors, as areas with many single
-detached houses and those far from Hamilton downtown might be
-residential zones where commercial activity is limited.
+Meanwhile, the areas with many single detached houses and those far from
+Hamilton downtown might be residential zones where commercial activity
+is limited due to institutional factors.
 
 In this paper, I utilized open data to examine the spatial locations of
 grocery stores in Hamilton, Ontario. I found noticeable spatial patterns
-and effects in grocery store locations. Grocery stores tend to cluster
-together in nearby dissemination areas, but when there are too many
-grocery stores, they are more likely to disperse. The number of grocery
-stores is also significantly associated with population density,
-dissemination area size, the percentage of residents who do not speak an
-official language at home and live in single detached houses, and the
-distance to Hamilton downtown.
+in grocery store locations. Grocery stores tend to cluster together in
+nearby dissemination areas, but when there are too many grocery stores,
+they are more likely to disperse. The number of grocery stores is also
+significantly associated with population density, dissemination area
+size, the percentage of residents who do not speak an official language
+at home and live in single detached houses, and the distance to Hamilton
+downtown.
 
 There are some limitations in this paper. Euclidean distances were used
 to measure the distance from the dissemination area centroid to Hamilton
