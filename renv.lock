@@ -28,7 +28,7 @@
       "RemoteHost": "api.github.com",
       "RemoteRepo": "GroceryStoreHamiltonData",
       "RemoteUsername": "zehuiyin",
-      "RemoteSha": "d5d1add36da3f7691bcb60b31f359f9fc3967bcc",
+      "RemoteSha": "946472cc061c7a7d42b843ac1a84372a3b4a0c00",
       "Requirements": [
         "R",
         "dplyr",
@@ -38,7 +38,7 @@
         "units",
         "utils"
       ],
-      "Hash": "f708056056958c0940604950c7166593"
+      "Hash": "fd5b05279ac7075c3dd1dd70005c18d7"
     },
     "KernSmooth": {
       "Package": "KernSmooth",

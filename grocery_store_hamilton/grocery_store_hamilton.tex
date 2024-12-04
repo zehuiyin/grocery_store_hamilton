@@ -35,7 +35,6 @@ R} % Sets Journal name
 \usepackage[]{natbib}
 \bibliographystyle{elsarticle-harv}
 
-\usepackage{graphicx}
 \ifxetex
   \usepackage[setpagesize=false, % page size defined by xetex
               unicode=false, % unicode breaks when used with xetex
@@ -150,9 +149,12 @@ Escarpment runs through the middle of the city, dividing it into two
 parts. Figure \ref{fig:study_area} below shows the study area.
 
 \begin{figure}
-\centering
-\includegraphics{grocery_store_hamilton_files/figure-latex/unnamed-chunk-5-1.pdf}
-\caption{\label{fig:study_area}Study Area: Hamilton, Ontario}
+
+{\centering \includegraphics[width=4.8in,height=3.6in]{./images/study_area} 
+
+}
+
+\caption{\label{fig:study_area}Study Area: Hamilton, Ontario}\label{fig:unnamed-chunk-6}
 \end{figure}
 
 \subsection{Data Sources}\label{data-sources}
@@ -256,7 +258,7 @@ stops.
 
 }
 
-\caption{\label{fig:dep}Number of Grocery Stores in Dissemination Areas in Hamilton}\label{fig:unnamed-chunk-9}
+\caption{\label{fig:dep}Number of Grocery Stores in Dissemination Areas in Hamilton}\label{fig:unnamed-chunk-10}
 \end{figure}
 
 \begin{figure}
@@ -265,7 +267,7 @@ stops.
 
 }
 
-\caption{\label{fig:descriptive}Number of Grocery Stores (left) and HSR Bus Stops (right) at Dissemination Areas in Hamilton, Ontario}\label{fig:unnamed-chunk-12}
+\caption{\label{fig:descriptive}Number of Grocery Stores (left) and HSR Bus Stops (right) at Dissemination Areas in Hamilton, Ontario}\label{fig:unnamed-chunk-13}
 \end{figure}
 
 \subsection{Regression Results}\label{regression-results}
@@ -384,7 +386,7 @@ stores decreases.
 
 }
 
-\caption{\label{fig:margin}Conditional Prediction Plot for the Zero-inflated Negative Binomial Regression Model}\label{fig:unnamed-chunk-17}
+\caption{\label{fig:margin}Conditional Prediction Plot for the Zero-inflated Negative Binomial Regression Model}\label{fig:unnamed-chunk-18}
 \end{figure}
 
 Figure \ref{fig:margin} above shows the prediction plot for the

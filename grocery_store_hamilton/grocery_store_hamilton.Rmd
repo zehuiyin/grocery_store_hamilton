@@ -109,7 +109,7 @@ hamilton_basemap <- read_osm(grocery_DA,
 
 My study area is the City of Hamilton, located on the west side of Lake Ontario in the province of Ontario. It has a population of `r as.character(sum(grocery_DA$v_CA21_1..Population..2021))` according to the 2021 Canadian census [@census]. The Niagara Escarpment runs through the middle of the city, dividing it into two parts. Figure \ref{fig:study_area} below shows the study area.
 
-```{r, fig.cap="\\label{fig:study_area}Study Area: Hamilton, Ontario", fig.dpi=300, fig.height=4}
+```{r}
 # Create a data frame with coordinates for the text
 text_coords <- data.frame(
   x = c(-79.87024950208229),  # Longitude
@@ -120,7 +120,7 @@ text_coords <- data.frame(
 # Convert the data frame to a simple feature (sf) object
 text_sf <- st_as_sf(text_coords, coords = c("x", "y"), crs = 4326)
 
-tm_shape(hamilton_basemap) + tm_rgb() + 
+study_area <- tm_shape(hamilton_basemap) + tm_rgb() + 
   tm_shape(st_union(grocery_DA)) + 
   tm_borders(col = "black", lwd = 2) +
   tm_shape(hamilton_downtown) +
@@ -130,7 +130,12 @@ tm_shape(hamilton_basemap) + tm_rgb() +
   tm_compass() + tm_scale_bar() +
   tm_layout(attr.position = c("left", "bottom"))
 
-tmap_save(filename = "images/study_area.png")
+tmap_save(study_area, filename = "./images/study_area.png", height = 6,
+          width = 8, dpi = 300)
+```
+
+```{r, fig.cap="\\label{fig:study_area}Study Area: Hamilton, Ontario", out.height="3.6in", out.width="4.8in", fig.align="center"}
+knitr::include_graphics("./images/study_area.png")
 ```
 
 ## Data Sources
@@ -230,7 +235,7 @@ ggsave("./images/dep.png", p_dep, width = 4, height = 3, dpi = 300)
 
 Based on the bar chart in Figure \ref{fig:dep}, the distribution of the number of grocery stores in dissemination areas in Hamilton is highly skewed, with a large number of dissemination areas having no grocery stores. According to Figure \ref{fig:descriptive}, most grocery stores are located near the centre of Hamilton, within the Niagara Escarpment. There are also some dissemination areas at the edge of the city with grocery stores. In the right plot, the number of HSR bus stops per square kilometre is classified into three categories: low (0 to 50th percentile), middle (50th to 75th percentile), and high (75th to 100th percentile). The area with the highest transit service is also in the centre of Hamilton. Beyond the Niagara Escarpment, there are few transit stops.
 
-```{r, fig.cap="\\label{fig:dep}Number of Grocery Stores in Dissemination Areas in Hamilton", out.height="3in", out.width="4in", fig.align='center'}
+```{r, fig.cap="\\label{fig:dep}Number of Grocery Stores in Dissemination Areas in Hamilton", out.height="3in", out.width="4in", fig.align="center"}
 knitr::include_graphics("./images/dep.png")
 ```
 
@@ -262,7 +267,7 @@ tmap_save(descriptive, "./images/descriptive.png", width = 12,
           height = 5)
 ```
 
-```{r, fig.cap="\\label{fig:descriptive}Number of Grocery Stores (left) and HSR Bus Stops (right) at Dissemination Areas in Hamilton, Ontario", out.height="2.5in", out.width="6in", fig.align='center'}
+```{r, fig.cap="\\label{fig:descriptive}Number of Grocery Stores (left) and HSR Bus Stops (right) at Dissemination Areas in Hamilton, Ontario", out.height="2.5in", out.width="6in", fig.align="center"}
 knitr::include_graphics("./images/descriptive.png")
 ```
 
@@ -462,7 +467,7 @@ p4 <- p1 + p2 + p3 + plot_layout(guides = "collect")
 ggsave("./images/margin.png", p4, width = 9, height = 3, dpi = 300)
 ```
 
-```{r, fig.cap="\\label{fig:margin}Conditional Prediction Plot for the Zero-inflated Negative Binomial Regression Model", out.height="2.1in", out.width="6.3in", fig.align='center'}
+```{r, fig.cap="\\label{fig:margin}Conditional Prediction Plot for the Zero-inflated Negative Binomial Regression Model", out.height="2.1in", out.width="6.3in", fig.align="center"}
 knitr::include_graphics("./images/margin.png")
 ```
 
