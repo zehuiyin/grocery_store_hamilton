@@ -22,13 +22,13 @@
     },
     "GroceryStoreHamiltonData": {
       "Package": "GroceryStoreHamiltonData",
-      "Version": "1.0",
+      "Version": "1.1",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "GroceryStoreHamiltonData",
       "RemoteUsername": "zehuiyin",
-      "RemoteSha": "946472cc061c7a7d42b843ac1a84372a3b4a0c00",
+      "RemoteSha": "fa4f297f34e2b0f615f833044930dd99d71dc3fc",
       "Requirements": [
         "R",
         "dplyr",
@@ -38,7 +38,7 @@
         "units",
         "utils"
       ],
-      "Hash": "fd5b05279ac7075c3dd1dd70005c18d7"
+      "Hash": "ad269d874889f1104257b7582595f9e1"
     },
     "KernSmooth": {
       "Package": "KernSmooth",
