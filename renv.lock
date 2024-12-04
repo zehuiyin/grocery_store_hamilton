@@ -63,6 +63,22 @@
       ],
       "Hash": "1920b2f11133b12350024297d8a4ff4a"
     },
+    "OpenStreetMap": {
+      "Package": "OpenStreetMap",
+      "Version": "0.4.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "ggplot2",
+        "grDevices",
+        "methods",
+        "rJava",
+        "raster",
+        "sp"
+      ],
+      "Hash": "041ab031ca9b5b4ad6b45982f93c5b99"
+    },
     "R6": {
       "Package": "R6",
       "Version": "2.5.1",
@@ -658,12 +674,12 @@
       "RemoteHost": "api.github.com",
       "RemoteRepo": "geog712package",
       "RemoteUsername": "zehuiyin",
-      "RemoteSha": "407c2ab9cfdd9334aaf203964b5a580a17aff1f1",
+      "RemoteSha": "63561ea7c6d478889b92c6df7ec035ca116cee26",
       "Requirements": [
         "R",
         "sf"
       ],
-      "Hash": "ff625e647cc347e44d062505f59301fa"
+      "Hash": "e2d6dd02b316c0a9dff28ce9c922774e"
     },
     "geojsonsf": {
       "Package": "geojsonsf",
@@ -1487,6 +1503,17 @@
         "vctrs"
       ],
       "Hash": "1cba04a4e9414bdefc9dcaa99649a8dc"
+    },
+    "rJava": {
+      "Package": "rJava",
+      "Version": "1.0-11",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "methods"
+      ],
+      "Hash": "524167e771b81342f8dd7a891ed3afa8"
     },
     "ragg": {
       "Package": "ragg",

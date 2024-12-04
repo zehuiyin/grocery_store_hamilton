@@ -69,6 +69,13 @@ library(mapview)
 library(tidytransit)
 library(tmap)
 library(tmaptools)
+# need to manually set Java directory if it is not set in the system environment
+# first we check whether it is already set
+# Sys.getenv("JAVA_HOME")
+# if it is not set, then we set it manually
+# here is the java directory in my computer
+Sys.setenv(JAVA_HOME=r"(C:\Program Files\Java\jdk-11.0.17)")
+library(OpenStreetMap) # functions in tmaptools depends on this package
 library(marginaleffects)
 library(patchwork)
 ```
@@ -138,7 +145,7 @@ I utilize three data sources in this paper, as shown in the Table \ref{tab:data_
 \begin{table}[h]
 \centering
 \begin{footnotesize}
-\begin{tabularx}{\textwidth}{XllXl}
+\begin{tabularx}{\textwidth}{XXll}
 \hline
 Name                                           & Source              & URL                                             & Accessed Date \\
 \hline
