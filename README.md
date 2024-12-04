@@ -31,4 +31,4 @@ This project addresses the following research question:
 
 ## Data:
 
-To facilitate reproducibility and open science, all the data used in this paper have been packaged into an R package (Yin, 2024), which is hosted on GitHub. You can access it at <https://github.com/zehuiyin/geog712package>.
+To facilitate reproducibility and open science, all the data used in this paper have been packaged into an R package (Yin, 2024), which is hosted on GitHub. You can access it at <https://github.com/zehuiyin/GroceryStoreHamiltonData>.

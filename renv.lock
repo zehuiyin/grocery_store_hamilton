@@ -20,6 +20,26 @@
       ],
       "Hash": "065ae649b05f1ff66bb0c793107508f5"
     },
+    "GroceryStoreHamiltonData": {
+      "Package": "GroceryStoreHamiltonData",
+      "Version": "1.0",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "GroceryStoreHamiltonData",
+      "RemoteUsername": "zehuiyin",
+      "RemoteSha": "d5d1add36da3f7691bcb60b31f359f9fc3967bcc",
+      "Requirements": [
+        "R",
+        "dplyr",
+        "sf",
+        "stats",
+        "tidytransit",
+        "units",
+        "utils"
+      ],
+      "Hash": "f708056056958c0940604950c7166593"
+    },
     "KernSmooth": {
       "Package": "KernSmooth",
       "Version": "2.23-24",
@@ -665,21 +685,6 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "44be46e0ab530e07869976da2e85490d"
-    },
-    "geog712package": {
-      "Package": "geog712package",
-      "Version": "0.1.1",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "geog712package",
-      "RemoteUsername": "zehuiyin",
-      "RemoteSha": "63561ea7c6d478889b92c6df7ec035ca116cee26",
-      "Requirements": [
-        "R",
-        "sf"
-      ],
-      "Hash": "e2d6dd02b316c0a9dff28ce9c922774e"
     },
     "geojsonsf": {
       "Package": "geojsonsf",
