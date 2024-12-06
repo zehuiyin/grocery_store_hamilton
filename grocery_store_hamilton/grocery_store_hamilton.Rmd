@@ -69,7 +69,10 @@ remotes::install_github("zehuiyin/GroceryStoreHamiltonData")
 # load packages
 library(sf)
 library(tidyverse)
+
+# prepare_data() function in the package require internet access
 library(GroceryStoreHamiltonData)
+
 library(pscl)
 library(units)
 library(texreg)
@@ -77,6 +80,7 @@ library(mapview)
 library(tidytransit)
 library(tmap)
 library(tmaptools)
+
 # need to manually set Java directory if it is not set in the system environment
 # first we check whether it is already set
 # Sys.getenv("JAVA_HOME")
@@ -85,6 +89,7 @@ library(tmaptools)
 Sys.setenv(JAVA_HOME=r"(C:\Program Files\Java\jdk-11.0.17)")
 # OpenStreetMap package depends on Java
 library(OpenStreetMap) # functions in tmaptools depends on this package
+
 library(marginaleffects)
 library(patchwork)
 ```
